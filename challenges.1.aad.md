@@ -57,7 +57,7 @@ After the cluster has been created, download the admin credentials to initially 
 > az aks get-credentials --resource-group YOUR_RESOURCE_GROUP --name YOUR_CLUSTER_NAME --admin
 ```
 
-Now assign the cluster role ***cluster-admin*** to the AAD group. Therfore, create a file with the following content (replace *GROUP_ID* with the value of your AAD group id):
+Now assign the cluster role ***cluster-admin*** to the AAD group. Therfore, create a file *clusterrolebinding.yaml* with the following content (replace *GROUP_ID* with the value of your AAD group id) and deploy it to your AKS cluster:
 
 ```YAML
 apiVersion: rbac.authorization.k8s.io/v1
@@ -72,6 +72,10 @@ subjects:
 - apiGroup: rbac.authorization.k8s.io
   kind: Group
   name: "GROUP_ID"
+```
+
+```Shell
+> kubectl apply -f clusterrolebinding.yaml
 ```
 
 ## Log in with your AAD User ##
@@ -99,5 +103,5 @@ aks-nodepool1-14322398-2   Ready     agent     2h        v1.10.6
 
 # Housekeeping #
 
-If you created an AAD tenant for testing purposes, delete the directory via the Azure Portal under ***Azure Active Directory > Overview*** and click "Delete directory".
-In case you get any errors due to enterprise application that cannot be delete, here's help: <https://blogs.msdn.microsoft.com/kennethteo/2017/09/19/deleting-azure-ad-tenant/>
+If you created an AAD tenant for testing purposes and don't need it anymore **after the workshop**, delete the directory via the Azure Portal under ***Azure Active Directory > Overview*** ("Delete directory" button).
+In case you get any errors due to enterprise applications that cannot be delete, here's help: <https://blogs.msdn.microsoft.com/kennethteo/2017/09/19/deleting-azure-ad-tenant/>
