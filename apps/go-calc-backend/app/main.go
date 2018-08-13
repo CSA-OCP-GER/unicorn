@@ -18,7 +18,7 @@ type Calculation struct {
 	Timestamp time.Time `json:"timestamp"`
 	Value     string    `json:"value"`
 	Host      string    `json:"host"`
-	__v       string    `json:"value"`
+	Version   string    `json:"__v"`
 }
 
 func main() {
@@ -109,7 +109,7 @@ func GetCalculation(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	var calcResult = Calculation{Value: "[" + primestr + "]", Timestamp: time.Now(), Host: hostname, __v: "1.0"}
+	var calcResult = Calculation{Value: "[" + primestr + "]", Timestamp: time.Now(), Host: hostname, Version: "1.0"}
 	elapsed := time.Since(start)
 	var milliseconds = int64(elapsed / time.Millisecond)
 	client.TrackEvent("calculation-go-backend-result")

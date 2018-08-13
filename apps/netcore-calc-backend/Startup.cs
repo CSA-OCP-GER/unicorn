@@ -89,11 +89,11 @@ namespace netcore_calc_backend
                 tc.TrackMetric("calculation-netcore-backend-duration", sw.ElapsedMilliseconds);
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(new
                 {
-                    __v = "1.0",
+                    __v = "2.0",
                     timestamp = DateTimeOffset.UtcNow.ToString("u"),
                     value = factors,
-                    host = Environment.MachineName
-                    // timetocalc = sw.ElapsedMilliseconds
+                    host = Environment.MachineName,
+                    timetocalc = sw.ElapsedMilliseconds
                 }));
             });
         }
