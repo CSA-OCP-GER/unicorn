@@ -93,7 +93,7 @@ namespace netcore_calc_backend
                     timestamp = DateTimeOffset.UtcNow.ToString("u"),
                     value = factors,
                     host = Environment.MachineName,
-                    timetocalc = sw.ElapsedMilliseconds
+                    timetocalc = sw.ElapsedTicks
                 }));
             });
         }

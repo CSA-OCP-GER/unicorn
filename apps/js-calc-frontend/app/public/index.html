@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,13 +12,16 @@
     <script src="appinsights.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
 </head>
+
 <body class="site">
     <div class="jumbotron">
         <div class="container">
             <h2 class="display-5">Hello Prime Factor Calculator</h2>
             <p>This is a sample application for demonstrating multi container applications on Kubernetes in Azure.</p>
-            <p>It is also calculating prime factors in Node and GO!</p>
-            <p><a class="btn btn-primary btn-lg" href="https://github.com/denniszielke/phoenix" role="button">Learn more &raquo;</a></p>
+            <p>It is calculating prime factors in Dotnet Core, NodeJS and GO!</p>
+            <p>
+                <a class="btn btn-primary btn-lg" href="https://github.com/denniszielke/phoenix" role="button">Learn more &raquo;</a>
+            </p>
         </div>
     </div>
     <div class="container">
@@ -30,7 +34,7 @@
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" ng-model="loop" value"loop" checked="true" name="loop">keep posting in a loop</input>
+                            <input type="checkbox" ng-model="loop" value "loop" checked="true" name="loop">keep posting in a loop</input>
                         </label>
                     </div>
                     <div class="form-group">
@@ -43,12 +47,34 @@
                 </form>
                 <div class="row">
                     <h2>Result</h2>
-                    <p class="bg-info">{{ result }}</p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Version</th>
+                                <th>Value</th>
+                                <th>Host</th>
+                                <th>Timestamp</th>
+                                <th ng-show="result.timetocalc">Ticks To Calc</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ result.__v }}</td>
+                                <td>{{ result.value }}</td>
+                                <td>{{ result.host }}</td>
+                                <td>{{ result.timestamp }}</td>
+                                <td ng-show="result.timetocalc">{{ result.timetocalc }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <p class="bg-info">{{ result }}</p> -->
                 </div>
             </div>
         </div>
 
-    </div><!-- /.container -->
-    
+    </div>
+    <!-- /.container -->
+
 </body>
+
 </html>
