@@ -43,6 +43,7 @@ Open a shell and create an AKS cluster via Azure CLI.
 
 ```Shell
 > az aks create --resource-group YOUR_RESOURCE_GROUP --name YOUR_CLUSTER_NAME --generate-ssh-keys \
+  --enable-rbac \
   --aad-server-app-id APP_ID \
   --aad-server-app-secret APP_KEY \
   --aad-client-app-id CLIENT_ID \
