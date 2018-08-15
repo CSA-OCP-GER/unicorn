@@ -86,7 +86,7 @@ spec:
     spec:
       containers:
       - name: calcbackend
-        image: csaocpger/jscalcbackend:1.0
+        image: csaocpger/jscalcbackend:2.0
         ports:
           - containerPort: 80
             name: http         

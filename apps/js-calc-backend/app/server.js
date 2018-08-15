@@ -66,8 +66,10 @@ app.post('/api/calculation', function(req, res) {
         }
         resultValue = [0];
     }
+    
+    var endDate = new Date();
+
     if (config.instrumentationKey){ 
-        var endDate = new Date();
         var duration = endDate - startDate;
         client.trackEvent({ name: "calculation-js-backend-result"});
         client.trackMetric({ name:"calculation-js-backend-duration", value: duration });
