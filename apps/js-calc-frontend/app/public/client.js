@@ -60,6 +60,10 @@ angular.module('CalculatorApp', [])
                             }
                             $scope.looping = true;
                         }
+                    })
+                    .error(function(data, status) {
+                        console.log(data);
+                        console.log(status);
                     });
             };
             
