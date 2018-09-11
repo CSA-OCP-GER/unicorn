@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
       - name: jscalcfrontend
-        image: csaocpger/jscalcfrontend:4.0
+        image: csaocpger/jscalcfrontend:5.0
         ports:
           - containerPort: 80
             name: http         

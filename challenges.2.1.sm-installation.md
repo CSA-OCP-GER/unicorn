@@ -64,7 +64,7 @@ $ kubectl create namespace challenge2
 Namespace challenge2 created.
 
 ## Label namespace to auto-inject istio sidecar during deployments
-$ kubectl label namespace cahllenge2 istio-injection=enabled
+$ kubectl label namespace challenge2 istio-injection=enabled
 ```
 
 ### Install Base Sample App ###

@@ -25,7 +25,8 @@ const forward_headers = ['x-request-id',
     'x-b3-flags',
     'x-ot-span-context',
     'number',
-    'accept'
+    'accept',
+    'user-agent'
 ];
 
 var redisClient = null;
