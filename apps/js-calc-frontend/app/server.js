@@ -196,11 +196,9 @@ app.post('/api/calculation', function (req, res) {
             'headers': new_headers
         };
         request.post(options, function (innererr, innerres, body) {
-            console.log(innerres.statusCode);
-            console.log(innerres.statusMessage);
-            console.log(JSON.stringify(innerres));
             var endDate = new Date();
             var duration = endDate - startDate;
+            
             if (innererr) {
                 console.log("error:");
                 console.log(innererr);
@@ -208,6 +206,14 @@ app.post('/api/calculation', function (req, res) {
                     client.trackException(innererr);
                 }
             }
+
+            if(innerres && innerres.statusCode == 500) {
+                return res.send(500, {
+                    status: 500,
+                    data: innerres.body
+                });
+            }
+
             if (config.instrumentationKey) {
                 console.log("sending telemetry");
                 // client.trackDependency(
