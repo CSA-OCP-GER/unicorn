@@ -459,7 +459,16 @@
                     }
                   }
                 }
-              ]
+              ],
+              "webApplicationFirewallConfiguration" : {
+                "enabled": true,
+                "firewallMode": "Detection",
+                "ruleSetType": "OWASP",
+                "ruleSetVersion": "3.0",
+                "disabledRuleGroups": [],
+                "exclusions": [],
+                "requestBodyCheck": false
+              }
             },
               "dependsOn": [
                   "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
@@ -546,7 +555,7 @@
       "outputs": {
           "applicationGatewayPuplicIp": {
             "type": "string",
-            "value": "[reference(variables('applicationGatewayPublicIpId')).properties.ipAddress]"
+            "value": "[reference(variables('applicationGatewayPublicIpId')).ipAddress]"
           }
       }
   }
