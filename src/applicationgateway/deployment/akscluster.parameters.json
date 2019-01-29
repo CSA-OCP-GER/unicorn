@@ -18,13 +18,13 @@
           "value": "16.1.0.0/16"
       },
       "aksServicePrincipalAppId": {
-        "value": "7f18c0e0-c0f3-4c3c-93de-c5ab90cde92c"
+        "value": ""
       },
       "aksServicePrincipalClientSecret": {
-        "value": "4b773588-f8ec-43e5-938a-36a46dbc5ef3"
+        "value": ""
       },
       "aksServicePrincipalObjectId": {
-        "value": "3f1eb190-880d-4352-8001-fd2879e4f202"
+        "value": ""
       },
       "aksDnsPrefix": { "value": "aksadvancedworkshop" },
       "aksAgentOsDiskSizeGB": { "value": 0 },

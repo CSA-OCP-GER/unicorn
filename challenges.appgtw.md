@@ -7,20 +7,20 @@
   - route traffic from public ApplicationGateway to your Cluster's internal LoadBalancer
 
 - Cluster
-  - create a Clsuter with Azure Advanced Container Network Integration (Azure CNI)
-  - create an internal Ingress Controller
+  - create a Cluster with Azure Advanced Container Network Integration (Azure CNI)
+  - create an internal ingress controller
   - deploy your cluster with Azure ARM Templates
-  - create a Service Principal for Kubernetes to manage Azure Resources
+  - create a service principal for Kubernetes to manage Azure resources
 
 ## Create a ResourceGroup for your Cluster ##
 
-Open a shell and create a ResourceGroup
+Open a shell and create a resource group
 
 ```Shell
 > az group create --name <your-rg-name> --location <your-azure-location>
 ```
 
-## Create an Azure Active Directory Service Principal
+## Create an Azure Active Directory service principal
 
 ```Shell
 > az ad sp create-for-rbac --name <your-spn-name> --skip-assignment true
@@ -33,7 +33,7 @@ Get the ObjectId of your created ServicePrincipal and remember it.
 > az ad sp show --id <your-appId>
 ```
 
-## Cluster Deployment with Azure ResourceGroup Deployment ##
+## Cluster Deployment with Azure resource group deployment ##
 
 To deploy the Cluster on Azure use the following [ARM Template](src/applicationgateway/deployment/akscluster.json).
 Open a shell and go to the directory where the ARM Template is located. 
@@ -47,7 +47,7 @@ Remember the ip address of the ApplicationGateway from the output.
 
 ## Get cluster credentials and switch context of kubectl ##
 
-After your cluster is deployed get the cluster credentials to access the cluster with bubectl.
+After your cluster is deployed get the cluster credentials to access the cluster with kubectl.
 
 ```Shell
 > az aks get-credentials --name <your-cluster-name> --resource-group <your-resourcegroup-name>
@@ -67,14 +67,14 @@ Switch context to your deployed cluster.
 
 ## Deploy an internal Ingress Controller to your Cluster ##
 
-At this point we have an AKS Cluster deployed to Azure without a Load Balancer.
-Now we have to deploy an internal Ingress Controller with a private IP Address.
+At this point we have an AKS Cluster deployed to Azure without a load balancer.
+Now we have to deploy an internal ingress controller with a private IP address.
 The currently used VNET has an IP address range of 16.0.0.0/8 if you used the default value in akscluster.parameters.json.
 The VNET is splitted into two subnets
     - kubesubnet with an IP address range of 16.0.0.0/16
     - appgwsubnet with an IP address range of 16.1.0.0/16
 
-To deploy an internal Ingress Controller we need to use a free IP address in the range of the kubesubnet address range.
+To deploy an internal ingress controller we need to use a free IP address in the range of the kubesubnet address range.
 For tis example we use 16.0.255.1.
 
 Create a file named internal-ingress.yaml using the following example manifest file.
@@ -87,7 +87,7 @@ controller:
       service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 ```
 
-For this example we use Helm to install an internal NGINX Ingress Controller.
+For this example we use Helm to install an internal NGINX ingress controller.
 
 If helm is not installed on your system execute the following [steps](https://docs.helm.sh/using_helm/#installing-helm).
 

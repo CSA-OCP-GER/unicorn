@@ -413,7 +413,11 @@
                 {
                   "name": "bepool",
                   "properties": {
-                    "backendAddresses": []
+                    "backendAddresses": [
+                        {
+                            "ipAddress": "16.0.255.1"
+                        }
+                    ]
                   }
                 }
               ],
