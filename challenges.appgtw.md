@@ -71,11 +71,11 @@ At this point we have an AKS Cluster deployed to Azure without a load balancer.
 Now we have to deploy an internal ingress controller with a private IP address.
 The currently used VNET has an IP address range of 16.0.0.0/8 if you used the default value in akscluster.parameters.json.
 The VNET is splitted into two subnets
-    - kubesubnet with an IP address range of 16.0.0.0/16
-    - appgwsubnet with an IP address range of 16.1.0.0/16
+- kubesubnet with an IP address range of 16.0.0.0/16
+- appgwsubnet with an IP address range of 16.1.0.0/16
 
 To deploy an internal ingress controller we need to use a free IP address in the range of the kubesubnet address range.
-For tis example we use 16.0.255.1.
+For this example we use 16.0.255.1.
 
 Create a file named internal-ingress.yaml using the following example manifest file.
 
@@ -89,7 +89,7 @@ controller:
 
 For this example we use Helm to install an internal NGINX ingress controller.
 
-If helm is not installed on your system execute the following [steps](https://docs.helm.sh/using_helm/#installing-helm).
+If Helm is not installed on your system execute the following [steps](https://docs.helm.sh/using_helm/#installing-helm).
 
 Do the following to install Helm on a RBAC enabled Cluster.
 Create a file named helm-rbac.yaml and copy in the following yaml.
@@ -121,13 +121,13 @@ Create the service account and role binding with ```kubectl apply``` command.
 > kubectl apply -f helm-rbac.yaml
 ```
 
-Initialize helm.
+Initialize Helm.
 
 ```Shell
 helm init --service-account tiller
 ```
 
-Install NGINX Ingress Controller using helm.
+Install NGINX Ingress Controller using Helm.
 
 ```Shell
 > helm install stable/nginx-ingress --namespace kube-system -f .\internal-ingress.yaml --set controller.replicaCount=2
