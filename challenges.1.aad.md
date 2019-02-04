@@ -101,6 +101,22 @@ aks-nodepool1-14322398-1   Ready     agent     2h        v1.10.6
 aks-nodepool1-14322398-2   Ready     agent     2h        v1.10.6
 ```
 
+## Challenge: Create a ClusterRole/Group to be able to only read pods ##
+
+First, create a group in the Azure Active Directory connected to your cluster (note down the **object-id**!).
+
+Now create a new AAD user and assign the user to the group.
+
+To be able to use the group in the Kubernetes cluster, create a **cluster-role** named `custom:pod-reader` and a corresponding **cluster-role-binding** assigning the AAD group as "subject".
+
+> Remember to use the "admin context"
+
+Now log in with the new user (if it's not working, delete the context and/or user in ~/.kube/config you used before to access the cluster via RBAC).
+- try to read the cluster nodes via `kubectl get nodes`
+- try to read the pods running in the cluster via `kubectl get pods`
+
+> Need help? Check deployment files [here :blue_book:](hints/yaml/challenge-1)!
+
 # Housekeeping #
 
 If you created an AAD tenant for testing purposes and don't need it anymore **after the workshop**, delete the directory via the Azure Portal under ***Azure Active Directory > Overview*** ("Delete directory" button).
