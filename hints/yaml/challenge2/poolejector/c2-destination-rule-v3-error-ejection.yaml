@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: calcbackend-rule
+  namespace: challenge2
+spec:
+  host: calcbackendsvc
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+  - name: v3-error
+    labels:
+      version: v3-error
+    trafficPolicy:
+      connectionPool:
+        http: {}
+        tcp: {}
+      outlierDetection:
+        baseEjectionTime: 3m
+        consecutiveErrors: 1
+        interval: 5s
+        maxEjectionPercent: 100

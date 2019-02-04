@@ -17,6 +17,12 @@ const app = express();
 const morgan = require('morgan');
 
 const OS = require('os');
+var fail = false;
+
+setTimeout(() => {
+    fail = true;
+    console.log("NOW: failing on purpose.");
+}, 120 * 1000);
 
 // add logging middleware
 app.use(morgan('dev'));
@@ -54,6 +60,13 @@ app.post('/api/calculation', function(req, res) {
         var startDate = new Date();
         client.trackEvent( { name: "calculation-js-backend-call"});
     }
+
+    // randomly fail after 2 minutes from container start
+    if(Math.floor(Math.random() * Math.floor(2)) > 0 && fail) {
+        console.log("Failing on purpose.");
+        return res.send(500, "Failed on purpose.");
+    }
+
     var resultValue = [0];
     try{
         resultValue = primeFactors(req.headers.number);

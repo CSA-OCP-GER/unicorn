@@ -1,11 +1,11 @@
 require('dotenv-extended').load();
 const config = require('./config');
 var appInsights = require("applicationinsights");
-if (config.instrumentationKey){ 
+if (config.instrumentationKey) {
     appInsights.setup(config.instrumentationKey)
-    .setAutoDependencyCorrelation(true)
-    .setAutoCollectDependencies(true)
-    .setAutoCollectPerformance(true);
+        .setAutoDependencyCorrelation(true)
+        .setAutoCollectDependencies(true)
+        .setAutoCollectPerformance(true);
     appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = "calc-frontend";
     appInsights.start();
 }
@@ -17,10 +17,26 @@ const morgan = require('morgan');
 const request = require('request');
 const OS = require('os');
 const redis = require("redis");
+const forward_headers = ['x-request-id',
+    'x-b3-traceid',
+    'x-b3-spanid',
+    'x-b3-parentspanid',
+    'x-b3-sampled',
+    'x-b3-flags',
+    'x-ot-span-context',
+    'number',
+    'accept',
+    'user-agent'
+];
 
 var redisClient = null;
 if (config.redisHost && config.redisAuth) {
-    redisClient = redis.createClient(6380, config.redisHost, {auth_pass: config.redisAuth, tls: {servername: config.redisHost}});
+    redisClient = redis.createClient(6380, config.redisHost, {
+        auth_pass: config.redisAuth,
+        tls: {
+            servername: config.redisHost
+        }
+    });
 }
 
 var publicDir = require('path').join(__dirname, '/public');
@@ -30,47 +46,60 @@ app.use(morgan('dev'));
 app.use(express.static(publicDir));
 
 // Routes
-app.get('/ping', function(req, res) {
-    client.trackEvent({ name: 'ping-js-frontend-received' });
+app.get('/ping', function (req, res) {
+    client.trackEvent({
+        name: 'ping-js-frontend-received'
+    });
     console.log('received ping');
     res.send('Pong');
 });
 
-app.get('/api/getappinsightskey', function(req, res) {
+app.get('/api/getappinsightskey', function (req, res) {
     console.log('returned app insights key');
-    if (config.instrumentationKey){ 
+    if (config.instrumentationKey) {
         res.send(config.instrumentationKey);
-    }
-    else{
+    } else {
         res.send('');
     }
 });
 
-app.post('/api/calculation', function(req, res) {
+app.post('/api/calculation', function (req, res) {
     console.log("received frontend request:");
     console.log(req.headers);
-    if (config.instrumentationKey){ 
+    if (config.instrumentationKey) {
         var startDate = new Date();
-        client.trackEvent( { name: "calculation-js-frontend-call-start"});
+        client.trackEvent({
+            name: "calculation-js-frontend-call-start"
+        });
     }
 
-    if (redisClient){
-        var cachedResult = redisClient.get(req.headers.number, function(err, reply) {
-            if (reply && !err){
-                if (config.instrumentationKey){ 
+    if (redisClient) {
+        var cachedResult = redisClient.get(req.headers.number, function (err, reply) {
+            if (reply && !err) {
+                if (config.instrumentationKey) {
                     var endDate = new Date();
                     var duration = endDate - startDate;
-                    client.trackDependency(
-                        { target: config.redisHost, dependencyTypeName: "REDIS", name: "calculation-cache", 
-                        data:"calculate number " + req.headers.number, 
-                        duration: duration, resultCode:0, success: true});
-                    client.trackEvent({ name: "calculation-js-frontend-cache" });
-                    client.trackMetric({ name:"calculation-js-frontend-duration", value: duration });
+                    client.trackDependency({
+                        target: config.redisHost,
+                        dependencyTypeName: "REDIS",
+                        name: "calculation-cache",
+                        data: "calculate number " + req.headers.number,
+                        duration: duration,
+                        resultCode: 0,
+                        success: true
+                    });
+                    client.trackEvent({
+                        name: "calculation-js-frontend-cache"
+                    });
+                    client.trackMetric({
+                        name: "calculation-js-frontend-duration",
+                        value: duration
+                    });
                 }
                 console.log("cache hit");
-                res.send(reply);            
-                console.log(reply);                
-            }else{
+                res.send(reply);
+                console.log(reply);
+            } else {
                 // if (err){
                 //     console.log("cache error:");
                 //     console.log(err);
@@ -80,79 +109,135 @@ app.post('/api/calculation', function(req, res) {
                 // }
                 console.log("cache miss");
                 var formData = {
-                    received: new Date().toLocaleString(), 
+                    received: new Date().toLocaleString(),
                     number: req.headers.number
                 };
-                var options = { 
+
+                var new_headers = {};
+
+                forward_headers.forEach(item => {
+                    if (req.headers[item] == null || req.headers[item] == undefined) {
+                        console.log('skip original header');
+                    } else {
+                        console.log('using original header ' + item + ': ' + req.headers[item]);
+                        new_headers[item] = req.headers[item];
+                    }
+                });
+                console.log(new_headers);
+
+                var options = {
                     'url': config.endpoint + '/api/calculation',
                     'form': formData,
-                    'headers': req.headers
-                };    
-                request.post(options, function(innererr, innerres, body) {
+                    'headers': new_headers
+                };
+                request.post(options, function (innererr, innerres, body) {
                     var endDate = new Date();
                     var duration = endDate - startDate;
-                    if (innererr){
+                    if (innererr) {
                         console.log("error:");
                         console.log(innererr);
-                        if (config.instrumentationKey){ 
+                        if (config.instrumentationKey) {
                             client.trackException(innererr);
                         }
                     }
-                    if (config.instrumentationKey){ 
+                    if (config.instrumentationKey) {
                         // client.trackDependency(
                         //     { target: "calc-backend-svc", name: "calc-backend-svc", 
                         //     data:"calculate number " + req.headers.number, 
                         //     duration: duration, resultCode:200, success: true});
-                        client.trackRequest({name:"POST /api/calculation", url: options.url, duration:duration, resultCode:200, success:true});
-                        client.trackEvent({ name: "calculation-js-frontend-call-complete" });
-                        client.trackMetric({ name:"calculation-js-frontend-duration", value: duration });
+                        client.trackRequest({
+                            name: "POST /api/calculation",
+                            url: options.url,
+                            duration: duration,
+                            resultCode: 200,
+                            success: true
+                        });
+                        client.trackEvent({
+                            name: "calculation-js-frontend-call-complete"
+                        });
+                        client.trackMetric({
+                            name: "calculation-js-frontend-duration",
+                            value: duration
+                        });
                     }
-                                       
-                    var cachedResult = redisClient.set(req.headers.number, body, function(err, reply) {
+
+                    var cachedResult = redisClient.set(req.headers.number, body, function (err, reply) {
                         console.log("cache save");
                         console.log(reply);
                     });
-                            
+
                     console.log(body);
                     res.send(body);
-                });    
+                });
             }
         });
-    }else{
+    } else {
         var formData = {
-            received: new Date().toLocaleString(), 
+            received: new Date().toLocaleString(),
             number: req.headers.number
         };
-        var options = { 
+
+        var new_headers = {};
+
+        forward_headers.forEach(item => {
+            if (req.headers[item] == null || req.headers[item] == undefined) {
+                console.log('skip original header');
+            } else {
+                console.log('using original header ' + item + ': ' + req.headers[item]);
+                new_headers[item] = req.headers[item];
+            }
+        });
+
+        console.log(new_headers);
+
+        var options = {
             'url': config.endpoint + '/api/calculation',
             'form': formData,
-            'headers': req.headers
+            'headers': new_headers
         };
-        console.log('Posting to...');
-        console.log(JSON.stringify(options));
-        request.post(options, function(innererr, innerres, body) {
+        request.post(options, function (innererr, innerres, body) {
             var endDate = new Date();
             var duration = endDate - startDate;
-            if (innererr){
+
+            if (innererr) {
                 console.log("error:");
                 console.log(innererr);
-                if (config.instrumentationKey){ 
+                if (config.instrumentationKey) {
                     client.trackException(innererr);
                 }
             }
-            if (config.instrumentationKey){ 
+
+            if (innerres && innerres.statusCode == 500) {
+                return res.send(500, {
+                    status: 500,
+                    data: innerres.body
+                });
+            }
+
+            if (config.instrumentationKey) {
                 console.log("sending telemetry");
                 // client.trackDependency(
                 //     { name: "POST /api/calculation", target: "calc-backend-svc | roleName:calc-backend-svc", 
                 //     data: options.url, dependencyTypeName: "Http",
                 //     duration: duration, resultCode:200, success: true});
-                client.trackEvent({ name: "calculation-js-frontend-call-complete" });
-                client.trackRequest({name:"POST /api/calculation", url: options.url, duration:duration, resultCode:200, success:true});
-                client.trackMetric({ name:"calculation-js-frontend-duration", value: duration });
+                client.trackEvent({
+                    name: "calculation-js-frontend-call-complete"
+                });
+                client.trackRequest({
+                    name: "POST /api/calculation",
+                    url: options.url,
+                    duration: duration,
+                    resultCode: 200,
+                    success: true
+                });
+                client.trackMetric({
+                    name: "calculation-js-frontend-duration",
+                    value: duration
+                });
             }
-            
-            if (redisClient){
-                var cachedResult = redisClient.set(req.headers.number, body, function(err, reply) {
+
+            if (redisClient) {
+                var cachedResult = redisClient.set(req.headers.number, body, function (err, reply) {
                     console.log(reply);
                 });
             }
@@ -161,14 +246,16 @@ app.post('/api/calculation', function(req, res) {
             res.send(body);
         });
     }
-    
+
 });
 
-app.post('/api/dummy', function(req, res) {
+app.post('/api/dummy', function (req, res) {
     console.log("received dummy request:");
     console.log(req.headers);
-    if (config.instrumentationKey){ 
-        client.trackEvent({ name: "dummy-js-frontend-call"});
+    if (config.instrumentationKey) {
+        client.trackEvent({
+            name: "dummy-js-frontend-call"
+        });
     }
     res.send('42');
 });
@@ -176,8 +263,10 @@ app.post('/api/dummy', function(req, res) {
 console.log(config);
 console.log(OS.hostname());
 // Listen
-if (config.instrumentationKey){ 
-    client.trackEvent({ name: "js-frontend-initializing"});
+if (config.instrumentationKey) {
+    client.trackEvent({
+        name: "js-frontend-initializing"
+    });
 }
 app.listen(config.port);
-console.log('Listening on localhost:'+ config.port);
+console.log('Listening on localhost:' + config.port);
