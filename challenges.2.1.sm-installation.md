@@ -1,10 +1,22 @@
 # Install Istio in your AKS cluster #
 
+## Here is what you learn ##
+
+- Install Istio in your cluster
+  - create Custom Resource Definitions
+  - Configure Helm
+  - deploy Istio to your cluster via Helm deployment
+  - deploy base application
+
 ## Installation via Helm ##
 
-Download Istio Release (1.0.2): https://github.com/istio/istio/releases/latest
+Download Istio Release (1.0.5 / at the time of writing. Please stick to that version.): https://github.com/istio/istio/releases/latest
 
-### Install CRDS ###
+Unpack the archive to a folder underneath the Git repo.
+
+### Install Custom Resource Definitions ###
+
+Go to the directory where you unpacked Istio and run the following command.
 
 ```shell
 $ kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
@@ -16,6 +28,8 @@ customresourcedefinition.apiextensions.k8s.io "handlers.config.istio.io" created
 ```
 
 ### Configure Helm/Tiller ###
+
+Now configure the cluster to be able to use Helm for the deployment of Istio (create a service-account and CR-binding).
 
 ```shell
 $ kubectl apply -f install/kubernetes/helm/helm-service-account.yaml
@@ -29,6 +43,8 @@ $ helm init --service-account tiller
 ```
 
 ### Install Istio via Helm Chart ###
+
+Now it's time to install Istio with default configuration onto your cluster:
 
 ```shell
 $ helm install install/kubernetes/helm/istio --name istio --namespace istio-system
@@ -56,7 +72,7 @@ prometheus                 1         1         1            1           3m
 
 ## Base Deployment for Sample Application ##
 
-### Install Namespace for Challenge 2 ###
+### Install a Kubernetes namespace for Challenge-2 ###
 
 ```shell
 $ kubectl create namespace challenge2
@@ -68,6 +84,13 @@ $ kubectl label namespace challenge2 istio-injection=enabled
 ```
 
 ### Install Base Sample App ###
+
+This is the base sample application where all further deployments will depend on. It consists of the following pods/services (standard Kubernetes objects):
+
+- Front end pod with the Angular application
+- Frontend service pointing to these pods --> internal service that is **not** accessible via internet (external LoadBalancer)!
+- Backend pods with the "business logic" (three implementations: Go, .NETCore & NodeJS)
+- Backend service pointing to these pods --> internal service that is **not** accessible via internet (external LoadBalancer)!
 
 ```yaml
 apiVersion: v1
