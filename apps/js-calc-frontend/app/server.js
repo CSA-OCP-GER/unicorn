@@ -127,7 +127,9 @@ app.post('/api/calculation', function(req, res) {
             'url': config.endpoint + '/api/calculation',
             'form': formData,
             'headers': req.headers
-        };    
+        };
+        console.log('Posting to...');
+        console.log(JSON.stringify(options));
         request.post(options, function(innererr, innerres, body) {
             var endDate = new Date();
             var duration = endDate - startDate;
