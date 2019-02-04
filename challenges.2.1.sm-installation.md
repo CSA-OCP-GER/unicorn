@@ -2,7 +2,7 @@
 
 ## Installation via Helm ##
 
-Download Istio Release (1.0.2): https://github.com/istio/istio/releases
+Download Istio Release (1.0.2): https://github.com/istio/istio/releases/latest
 
 ### Install CRDS ###
 
@@ -110,7 +110,7 @@ spec:
 ```
 
 ```shell
-$ kubectl apply hints/yaml/challenge2/base-sample-app.yaml
+$ kubectl apply -f hints/yaml/challenge2/base-sample-app.yaml
 
 service "calcfrontendsvc" created
 deployment.extensions "jscalcfrontend-v2" created

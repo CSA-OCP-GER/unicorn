@@ -134,7 +134,14 @@ $ kubectl get gateways -n challenge2
 
 NAME               AGE
 frontend-gateway   1m
+
+$ kubectl describe svc/istio-ingressgateway -n istio-system
 ```
+Copy the Load Balancer IP of the Ingress Gateway an open the browser: http://<INGRESS_GATEWAY_IP>/
+
+You should see something like this:
+
+![Result](img/result_ingress_gateway.png)
 
 ## Weigth-based Routing ##
 
