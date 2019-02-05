@@ -1,27 +1,5 @@
 # Remove Slow/Buggy Containers #
 
-## Add Destionation Rules ##
-
-```yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: calcbackend-rule
-  namespace: challenge2
-spec:
-  host: calcbackendsvc
-  subsets:
-  - name: v1
-    labels:
-      version: v1
-  - name: v2
-    labels:
-      version: v2
-  - name: v3-error
-    labels:
-      version: v3-error
-```
-
 ## Deploy new JS Backend (with errors) ##
 
 ```yaml
@@ -55,6 +33,28 @@ spec:
         env:
           - name: "PORT"
             value: "80"
+```
+
+## Add Destionation Rules ##
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: calcbackend-rule
+  namespace: challenge2
+spec:
+  host: calcbackendsvc
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+  - name: v3-error
+    labels:
+      version: v3-error
 ```
 
 ## Include Error-Backend in Request Routing ##

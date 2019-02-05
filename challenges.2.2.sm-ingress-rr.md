@@ -251,8 +251,13 @@ spec:
 
 Check --> 50% from v2
 
-## User-Agent Routing ##
+## Header-based Routing ##
 
+Sometimes, it may be neccessary that you can route based on header values...perhaps you want to enable access to pre-release features or want to serve requests made from mobile devices by other services. You can achieve this by using the `match` field in the http routing definition.
+
+As an example, we define routes that will be exclusively used when made from a mobile device.
+
+Apply the following YAML definition:
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -278,5 +283,7 @@ spec:
         subset: v1
 ```
 
-Open the website on your mobile phone or simulate a mobile device with the developer tools of your browser. You should be exclusively routed to version v2 of the service.
+Open the website on your mobile phone or simply simulate a mobile device with the developer tools of your browser. You should be exclusively routed to version v2 of the service.
+
+![Result_Mobile](img/mobile_rr.png)
 
