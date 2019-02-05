@@ -1,6 +1,6 @@
 # Install Istio in your AKS cluster #
 
-## Here is what you learn ##
+## Here is what you will learn ##
 
 - Install Istio in your cluster
   - create Custom Resource Definitions
