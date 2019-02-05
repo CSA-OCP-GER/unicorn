@@ -2,7 +2,7 @@
 
 > Need help? All neccessary files are [here :blue_book:](hints/yaml/challenge-2/request-routing)!
 
-## Here is what you learn ##
+## Here is what you will learn ##
 
 - Make the sample application available through the Istio ingress controller
   - create destination rules 
