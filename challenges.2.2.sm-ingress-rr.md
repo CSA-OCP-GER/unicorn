@@ -228,7 +228,7 @@ spec:
       version: v2
 ```
 
-Now, apply the weight-based routing where we refernce version v2 via the created subset.
+Now, apply the weight-based routing where we reference version v2 via the created subset.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
