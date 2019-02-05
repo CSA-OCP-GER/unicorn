@@ -170,7 +170,7 @@ You should see something like this:
 
 ## Weigth-based Routing ##
 
-There may be situations when running services in Kubernetes where you want to regulate the amount of traffic coming to (a set of) pod, e.g. when you deploy a new version of a service. 
+There may be situations when running services in Kubernetes where you want to regulate the amount of traffic coming to (a set of) pods, e.g. when you deploy a new version of a service. 
 
 With Istio, you are able to define weight-based routing rules.
 
