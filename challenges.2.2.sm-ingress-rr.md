@@ -46,9 +46,6 @@ spec:
   - name: v1
     labels:
       version: v1
-  - name: v2
-    labels:
-      version: v2
 ```
 
 Check Destination Rules
@@ -171,10 +168,115 @@ You should see something like this:
 
 ## Weigth-based Routing ##
 
-Apply c2-netcorcalcbackend-v2 (Version 2 netcalccore)
+There may be situations when running services in Kubernetes where you want to regulate the amount of traffic coming to (a set of) pod, e.g. when you deploy a new version of a service. 
 
-Apply c2-ingress-rr-v2-50weight (50:50 weight based routing)
+With Istio, you are able to define weight-based routing rules.
+
+Let's try to simulate that...deploy version 2 of the .NETCore calc-backend service (see: `labels` has now `version: v2`).
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: netcorecalcbackend-v2
+  namespace: challenge2
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        name: netcorecalcbackend
+        app: backend
+        version: v2
+    spec:
+      containers:
+      - name: netcorecalcbackend
+        image: csaocpger/netcorecalcbackend:2.0
+        ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+        env: 
+          - name: "PORT"
+            value: "80"
+```
+
+Make `version v2` available as a known subset:
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: calcbackend-rule
+  namespace: challenge2
+spec:
+  host: calcbackendsvc
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+```
+
+Now, apply the weight-based routing where we refernce version v2 via the created subset.
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: backend-vs
+  namespace: challenge2
+spec:
+  hosts:
+  - calcbackendsvc
+  http:
+    - route:
+      - destination:
+          host: calcbackendsvc
+          subset: v1
+        weight: 50
+      - destination:
+          host: calcbackendsvc
+          subset: v2
+        weight: 50
+```
+
+Check --> 50% from v2
 
 ## User-Agent Routing ##
 
-Apply c2-ingress-rr-v2-mobile (Mobile Users use V2, others v1)
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: backend-vs
+  namespace: challenge2
+spec:
+  hosts:
+  - calcbackendsvc
+  http:
+  - match:
+    - headers:
+        user-agent:
+          regex: .*Mobile.*
+    route:
+      - destination:
+          host: calcbackendsvc
+          subset: v2
+  - route:
+    - destination:
+        host: calcbackendsvc
+        subset: v1
+```
+
+Open the website on your mobile phone or simulate a mobile device with the developer tools of your browser. You should be exclusively routed to version v2 of the service.
+
