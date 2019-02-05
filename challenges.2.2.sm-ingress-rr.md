@@ -1,5 +1,7 @@
 # Configure Ingress Routes and Request Routing #
 
+> Need help? All neccessary files are [here :blue_book:](hints/yaml/challenge-2/request-routing)!
+
 ## Here is what you learn ##
 
 - Make the sample application available through the Istio ingress controller
