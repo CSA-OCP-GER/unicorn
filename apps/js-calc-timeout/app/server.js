@@ -61,12 +61,6 @@ app.post('/api/calculation', function (req, res) {
         client.trackEvent({ name: "calculation-js-backend-call" });
     }
 
-    // randomly fail after 2 minutes from container start
-    if (Math.floor(Math.random() * Math.floor(2)) > 0 && fail) {
-        console.log("Failing on purpose.");
-        return res.send(502, "Failed on purpose.");
-    }
-
     var resultValue = [0];
     try {
         resultValue = primeFactors(req.headers.number);
@@ -89,7 +83,9 @@ app.post('/api/calculation', function (req, res) {
     }
     var serverResult = JSON.stringify({ timestamp: endDate, value: resultValue, host: OS.hostname(), __v: '1.0' });
     console.log(serverResult);
-    res.send(serverResult.toString());
+
+    // delay response by 2 seconds
+    setTimeout(() => res.send(serverResult.toString()), 2000);
 });
 
 app.post('/api/dummy', function (req, res) {

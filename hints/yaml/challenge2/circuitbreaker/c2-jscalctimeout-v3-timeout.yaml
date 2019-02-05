@@ -34,10 +34,10 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: jscalcerror-v3-error
+  name: jscalctimeout-v3-timeout
   namespace: challenge2
 spec:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 5
   strategy:
     type: RollingUpdate
@@ -47,13 +47,13 @@ spec:
   template:
     metadata:
       labels:
-        name: jscalcerror
+        name: jscalctimeout
         app: backend
-        version: v3-error
+        version: v3-timeout
     spec:
       containers:
-      - name: jscalcerror
-        image: csaocpger/jscalcerror:6.0
+      - name: jscalctimeout
+        image: csaocpger/jscalctimeout:1.0
         ports:
           - containerPort: 80
             name: http

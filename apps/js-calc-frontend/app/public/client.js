@@ -45,10 +45,18 @@ angular.module('CalculatorApp', [])
                     value: $scope.id
                 });
                 $http.post(postUrl, {
-                        'number': $scope.id
-                    }, config)
-                    .success(function (response) {
-                        $scope.result = response;
+                    'number': $scope.id
+                }, config)
+                    .success(function (response, status) {
+                        if (status == 503 || status == 502) {
+                            $scope.errors.push({
+                                status: status ? status : '502',
+                                data: data,
+                                date: new Date().toLocaleTimeString()
+                            });
+                        } else {
+                            $scope.result = response;
+                        }
                         console.log("received response:");
                         console.log(response);
                         if (window.appInsights) {
@@ -94,7 +102,7 @@ angular.module('CalculatorApp', [])
                     });
             };
 
-            $scope.ClearErrors = function() {
+            $scope.ClearErrors = function () {
                 $scope.errors = [];
             }
 

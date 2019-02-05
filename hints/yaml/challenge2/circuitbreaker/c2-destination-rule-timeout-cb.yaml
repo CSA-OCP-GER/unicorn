@@ -12,12 +12,18 @@ spec:
   - name: v2
     labels:
       version: v2
-  - name: v3-error
+  - name: v3-timeout
     labels:
-      version: v3-error
+      version: v3-timeout
   trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 1
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
     outlierDetection:
       consecutiveErrors: 1
-      interval: 10s
+      interval: 1s
       baseEjectionTime: 3m
       maxEjectionPercent: 100

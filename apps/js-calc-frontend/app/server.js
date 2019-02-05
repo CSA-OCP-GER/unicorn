@@ -207,7 +207,7 @@ app.post('/api/calculation', function (req, res) {
                 }
             }
 
-            if (innerres && innerres.statusCode == 500) {
+            if (innerres && (innerres.statusCode >= 500)) {
                 return res.send(500, {
                     status: 500,
                     data: innerres.body

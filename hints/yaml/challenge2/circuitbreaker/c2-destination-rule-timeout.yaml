@@ -12,12 +12,6 @@ spec:
   - name: v2
     labels:
       version: v2
-  - name: v3-error
+  - name: v3-timeout
     labels:
-      version: v3-error
-  trafficPolicy:
-    outlierDetection:
-      consecutiveErrors: 1
-      interval: 10s
-      baseEjectionTime: 3m
-      maxEjectionPercent: 100
+      version: v3-timeout
