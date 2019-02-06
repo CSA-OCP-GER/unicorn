@@ -2,7 +2,7 @@
 
 > Need help? All neccessary files are [here :blue_book:](hints/yaml/challenge-2/request-routing)!
 
-## Here is what you learn ##
+## Here is what you will learn ##
 
 - Make the sample application available through the Istio ingress controller
   - create destination rules 
@@ -170,7 +170,7 @@ You should see something like this:
 
 ## Weigth-based Routing ##
 
-There may be situations when running services in Kubernetes where you want to regulate the amount of traffic coming to (a set of) pod, e.g. when you deploy a new version of a service. 
+There may be situations when running services in Kubernetes where you want to regulate the amount of traffic coming to (a set of) pods, e.g. when you deploy a new version of a service. 
 
 With Istio, you are able to define weight-based routing rules.
 
@@ -228,7 +228,7 @@ spec:
       version: v2
 ```
 
-Now, apply the weight-based routing where we refernce version v2 via the created subset.
+Now, apply the weight-based routing where we reference version v2 via the created subset.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
