@@ -1,0 +1,13 @@
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "jwt-example"
+  namespace: "challenge2"
+spec:
+  targets:
+  - name: <SERVICENAME>
+  origins:
+  - jwt:
+      issuer: "<ISSUER_STS>"
+      jwksUri: "<JWKS_URI>"
+  principalBinding: USE_ORIGIN

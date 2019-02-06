@@ -61,3 +61,4 @@ typings/
 .next
 .vscode/launch.json
 .vscode/tasks.json
+hints/yaml/challenge2/poolejector/test.json
