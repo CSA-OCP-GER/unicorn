@@ -37,7 +37,6 @@ Istio version >= 1.0.0 and Kubernetes >= 1.10.6.
 1. [How to test new service versions with request mirroring](challenges.2.7.sm-requestmirroring.md)
 1. [How to implement the Canary Deployment pattern with Istio](challenges.2.8.sm-canary.md)
 1. [How to handle external service calls / Egress](challenges.2.9.sm-egress.md)
-1. [Istio Under the Hood](challenges.2.10.sm-deepdive.md)
 
 ## How Istio works ##
 
