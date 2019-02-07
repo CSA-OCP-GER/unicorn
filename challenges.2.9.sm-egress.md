@@ -1,6 +1,6 @@
 # External Service Calls #
 
-Deploy baseline
+Deploy baseline workload
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
