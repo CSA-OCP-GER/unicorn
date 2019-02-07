@@ -16,7 +16,7 @@ spec:
       labels:
         name: jscalcbackend-egress
         app: backend
-        version: v3
+        version: v4
     spec:
       containers:
       - name: jscalcbackend-egress

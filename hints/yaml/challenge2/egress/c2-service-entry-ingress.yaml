@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: httpbin-ext
+  namespace: challenge2
+spec:
+  hosts:
+  - httpbin.org
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpbin-ext
+  namespace: challenge2
+spec:
+  hosts:
+  - httpbin.org
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - httpbin.org
+    route:
+    - destination:
+        host: httpbin.org
+        port:
+          number: 443
+      weight: 100
