@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jscalcbackend-new-v2
+  namespace: challenge2
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        name: jscalcbackend-new
+        app: backend
+        version: v3
+    spec:
+      containers:
+      - name: jscalcbackend-new
+        image: csaocpger/jscalcbackend-new:2.0
+        ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+        env: 
+          - name: "PORT"
+            value: "80"
