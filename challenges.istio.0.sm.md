@@ -28,15 +28,15 @@ Istio version >= 1.0.0 and Kubernetes >= 1.10.6.
 
 ## Here's what you'll learn ##
 
-1. [How to install Istio in your AKS cluster](challenges.2.1.sm-installation.md)
-1. [How to configure ingress routes and request routing](challenges.2.2.sm-ingress-rr.md)
-1. [How to remove slow/buggy containers temporarily and implement retry strategies](challenges.2.3.sm-remove-retry.md)
-1. [How to implement the Circuit Breaker pattern](challenges.2.4.sm-circuitbreaker.md)
-1. [How to gain insights about your applications routes](challenges.2.5.sm-insights.md)
-1. [How to play with fault injection to challenge your services](challenges.2.6.sm-faultinjection.md)
-1. [How to test new service versions with request mirroring](challenges.2.7.sm-requestmirroring.md)
-1. [How to implement the Canary Deployment pattern with Istio](challenges.2.8.sm-canary.md)
-1. [How to handle external service calls / Egress](challenges.2.9.sm-egress.md)
+1. [How to install Istio in your AKS cluster](challenges.istio.1.sm-installation.md)
+1. [How to configure ingress routes and request routing](challenges.istio.2.sm-ingress-rr.md)
+1. [How to remove slow/buggy containers temporarily and implement retry strategies](challenges.istio.3.sm-remove-retry.md)
+1. [How to implement the Circuit Breaker pattern](challenges.istio.4.sm-circuitbreaker.md)
+1. [How to gain insights about your applications routes](challenges.istio.5.sm-insights.md)
+1. [How to play with fault injection to challenge your services](challenges.istio.6.sm-faultinjection.md)
+1. [How to test new service versions with request mirroring](challenges.istio.7.sm-requestmirroring.md)
+1. [How to implement the Canary Deployment pattern with Istio](challenges.istio.8.sm-canary.md)
+1. [How to handle external service calls / Egress](challenges.istio.9.sm-egress.md)
 
 ## How Istio works ##
 
