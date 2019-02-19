@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: calcbackend-rule
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   host: calcbackendsvc
   subsets:

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: calcfrontendsvc
-  namespace: challenge2
+  namespace: challengeistio
   labels:
     name: calcfrontendsvc
     app: frontend
@@ -19,7 +19,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: jscalcfrontend-v2
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   replicas: 1
   minReadySeconds: 5
@@ -52,7 +52,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: calcbackendsvc
-  namespace: challenge2
+  namespace: challengeistio
   labels:
     name: calcbackendsvc
     app: backend 
@@ -68,7 +68,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: jscalcbackend-v1
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   replicas: 1
   minReadySeconds: 5
@@ -99,7 +99,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: gocalcbackend-v1
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   replicas: 1
   minReadySeconds: 5
@@ -130,7 +130,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: netcorecalcbackend-v1
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   replicas: 1
   minReadySeconds: 5

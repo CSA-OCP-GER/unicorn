@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: httpbin-ext
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - httpbin.org
@@ -17,7 +17,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: httpbin-ext
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - httpbin.org

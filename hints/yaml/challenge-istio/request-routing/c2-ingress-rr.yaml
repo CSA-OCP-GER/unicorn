@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: frontend-gateway
-  namespace: challenge2 
+  namespace: challengeistio 
 spec:
   selector:
     istio: ingressgateway
@@ -18,7 +18,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: app-vs
-  namespace: challenge2  
+  namespace: challengeistio  
 spec:
   hosts:
   - "*"
@@ -40,7 +40,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: frontend-vs
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - calcfrontendsvc
@@ -54,7 +54,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: backend-vs
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - calcbackendsvc

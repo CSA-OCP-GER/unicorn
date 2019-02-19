@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: jscalcbackend-egress-v1
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   replicas: 1
   minReadySeconds: 5

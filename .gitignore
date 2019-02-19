@@ -61,7 +61,7 @@ typings/
 .next
 .vscode/launch.json
 .vscode/tasks.json
-hints/yaml/challenge2/poolejector/test.json
+hints/yaml/challengeistio/poolejector/test.json
 apps/netcore-calc-backend/obj/**
 apps/netcore-calc-backend/bin/**
 .DS_Store

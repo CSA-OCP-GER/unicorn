@@ -9,7 +9,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: jscalcerror-v3-error
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   replicas: 1
   minReadySeconds: 5
@@ -46,7 +46,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: calcbackend-rule
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   host: calcbackendsvc
   subsets:
@@ -70,7 +70,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: backend-vs
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - calcbackendsvc
@@ -107,7 +107,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: calcbackend-rule
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   host: calcbackendsvc
   subsets:
@@ -131,7 +131,7 @@ spec:
         maxEjectionPercent: 100
 ```
 
-See how pods are removed after errors appear and be brought back after 3 minutes via `kubectl get po -n challenge2 -w`
+See how pods are removed after errors appear and be brought back after 3 minutes via `kubectl get po -n challengeistio -w`
 
 ## Add retry-strategies ##
 
@@ -140,7 +140,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: backend-vs
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - calcbackendsvc

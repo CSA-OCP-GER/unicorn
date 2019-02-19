@@ -29,7 +29,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: calcfrontend-rule
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   host: calcfrontendsvc
   subsets:
@@ -41,7 +41,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: calcbackend-rule
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   host: calcbackendsvc
   subsets:
@@ -53,7 +53,7 @@ spec:
 Check Destination Rules
 
 ```shell
-$ kubectl get destinationrules -n challenge2
+$ kubectl get destinationrules -n challengeistio
 
 NAME                AGE
 calcbackend-rule    1m
@@ -73,7 +73,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: frontend-gateway
-  namespace: challenge2 
+  namespace: challengeistio 
 spec:
   selector:
     istio: ingressgateway
@@ -89,7 +89,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: app-vs
-  namespace: challenge2  
+  namespace: challengeistio  
 spec:
   hosts:
   - "*"
@@ -111,7 +111,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: frontend-vs
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - calcfrontendsvc
@@ -125,7 +125,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: backend-vs
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - calcbackendsvc
@@ -148,14 +148,14 @@ virtualservice.networking.istio.io "backend-vs" created
 ```
 
 ```shell
-$ kubectl get virtualservices -n challenge2
+$ kubectl get virtualservices -n challengeistio
 
 NAME          AGE
 app-vs        14s
 backend-vs    13s
 frontend-vs   14s
 
-$ kubectl get gateways -n challenge2
+$ kubectl get gateways -n challengeistio
 
 NAME               AGE
 frontend-gateway   1m
@@ -181,7 +181,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: netcorecalcbackend-v2
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   replicas: 1
   minReadySeconds: 5
@@ -216,7 +216,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: calcbackend-rule
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   host: calcbackendsvc
   subsets:
@@ -235,7 +235,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: backend-vs
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - calcbackendsvc
@@ -266,7 +266,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: backend-vs
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - calcbackendsvc

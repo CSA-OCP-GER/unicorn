@@ -75,12 +75,12 @@ prometheus                 1         1         1            1           3m
 ### Install a Kubernetes namespace for Challenge-2 ###
 
 ```shell
-$ kubectl create namespace challenge2
+$ kubectl create namespace challengeistio
 
-Namespace challenge2 created.
+Namespace challengeistio created.
 
 ## Label namespace to auto-inject istio sidecar during deployments
-$ kubectl label namespace challenge2 istio-injection=enabled
+$ kubectl label namespace challengeistio istio-injection=enabled
 ```
 
 ### Install Base Sample App ###
@@ -97,7 +97,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: calcfrontendsvc
-  namespace: challenge2
+  namespace: challengeistio
   labels:
     name: calcfrontendsvc
     app: frontend
@@ -114,7 +114,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: jscalcfrontend-v2
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   replicas: 1
   minReadySeconds: 5
@@ -133,7 +133,7 @@ spec:
 ```
 
 ```shell
-$ kubectl apply -f hints/yaml/challenge2/base-sample-app.yaml
+$ kubectl apply -f hints/yaml/challengeistio/base-sample-app.yaml
 
 service "calcfrontendsvc" created
 deployment.extensions "jscalcfrontend-v2" created

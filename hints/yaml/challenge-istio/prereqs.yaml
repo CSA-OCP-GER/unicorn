@@ -1,6 +1,6 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: challenge2
+  name: challengeistio
   labels:
     istio-injection: enabled # Auto-Inject Istio sidecar in this namespace

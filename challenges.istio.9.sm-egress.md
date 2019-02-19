@@ -7,7 +7,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: backend-vs
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - calcbackendsvc
@@ -32,7 +32,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: calcbackend-rule
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   host: calcbackendsvc
   subsets:
@@ -53,7 +53,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: jscalcbackend-egress-v1
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   replicas: 1
   minReadySeconds: 5
@@ -88,7 +88,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: calcbackend-rule
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   host: calcbackendsvc
   subsets:
@@ -108,7 +108,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: backend-vs
-  namespace: challenge2
+  namespace: challengeistio
 spec:
   hosts:
   - calcbackendsvc
