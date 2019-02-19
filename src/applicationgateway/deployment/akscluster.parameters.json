@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "aksClusterName": {
+        "value": "aksadvancedworkshop"
+      },
+      "virtualNetworkName": {
+        "value": "AksVnet"
+      },
+      "virtualNetworkAddressPrefix":{
+          "value": "16.0.0.0/8"
+      },
+      "aksSubnetAddressPrefix":{
+          "value": "16.0.0.0/16"
+      },
+      "applicationGatewaySubnetAddressPrefix": {
+          "value": "16.1.0.0/16"
+      },
+      "aksServicePrincipalAppId": {
+        "value": ""
+      },
+      "aksServicePrincipalClientSecret": {
+        "value": ""
+      },
+      "aksServicePrincipalObjectId": {
+        "value": ""
+      },
+      "aksDnsPrefix": { "value": "aksadvancedworkshop" },
+      "aksAgentOsDiskSizeGB": { "value": 0 },
+      "aksAgentCount": { "value": 3 },
+      "aksAgentVMSize": { "value": "Standard_DS2_v2" }
+    }
+  }
+  
