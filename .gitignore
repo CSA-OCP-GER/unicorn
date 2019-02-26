@@ -59,3 +59,10 @@ typings/
 
 # next.js build output
 .next
+/src/aadpoditentity/src/.vs
+/src/aadpoditentity/src/AadPodIdentityDemoApi/bin/Debug/netcoreapp2.1
+/src/aadpoditentity/src/AadPodIdentityDemoApi/obj
+/src/aadpoditentity/src/AadPodIdentityDemoApi/Properties
+/src/aadpoditentity/src/AadPodIdentityDemoApi/AadPodIdentityDemoApi.csproj.user
+/src/aadpoditentity/src/AadPodIdentityDemoApi/appsettings.json
+/src/aadpoditentity/src/AadPodIdentityDemoApi/appsettings.Development.json
