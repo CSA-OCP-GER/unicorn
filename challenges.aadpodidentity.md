@@ -185,8 +185,26 @@ public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
 
 You can see that a special component named AzureServiceTokenProvider is used. This component is responsible to acquire a token on behalf of your user-assigned identity to access the Azure key vault.
 
-
+Now its time to build the docker image for the demo application. Open a shell and go to the directory where the [dockerfile](src/aadpodidentity/src/AadPodIdentityDemoApi/dockerfile) is located and run the following command to create the image.
 
 ```Shell
-ToDo
+docker build -t aadpodidentitydemoapi:1.0 .
+```
+
+Now tag your image to push it to your Azure Container Registry
+
+```Shell
+docker tag aadpodidentitydemoapi:1.0 <your registryname>.azurecr.io/aadpodidentitydemoapi:1.0
+```
+
+Login to your Azure Container Registry instance.
+
+```Shell
+az acr login -n <your registry name> -g <resourcegroup name>
+```
+
+Push the image to your registry.
+
+```Shell
+docker push <your registry name>.azurecr.io/aadpodidentitydemoapi:1.0
 ```
