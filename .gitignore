@@ -66,3 +66,8 @@ typings/
 /src/aadpoditentity/src/AadPodIdentityDemoApi/AadPodIdentityDemoApi.csproj.user
 /src/aadpoditentity/src/AadPodIdentityDemoApi/appsettings.json
 /src/aadpoditentity/src/AadPodIdentityDemoApi/appsettings.Development.json
+src/aadpodidentity/src/.vs/AadPodIdentityDemoApi/v15/Server/sqlite3/storage.ide
+/src/aadpodidentity/src/.vs
+/src/aadpodidentity/src/AadPodIdentityDemoApi/bin/Debug/netcoreapp2.1
+/src/aadpodidentity/src/AadPodIdentityDemoApi/obj
+/src/aadpodidentity/src/AadPodIdentityDemoApi/Properties

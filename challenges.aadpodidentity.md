@@ -106,7 +106,7 @@ Do not change the name of the secrets!
 ## Install Identity on your AKS Cluster ##
 
 Edit and save the file [aadpodidentity.yaml](/src/aadpodidentity/deployment/aadpodidentity.yaml).
-Replace clientid and managedidentity-resourcename.
+Replace clientid and manage-didentity-resourcename.
 
 ```YAML
 apiVersion: "aadpodidentity.k8s.io/v1"
@@ -141,7 +141,51 @@ spec:
 kubectl create -f aadpodidentitybinding.yaml
 ```
 
+To use the AzureIdentityBinding in your deployment you must use a label named ```aadpodidbinding``` and set its value to the value of the AzureIdentityBinding's Selector value, e.g.:
+
+``` yaml
+labels:
+  aadpodidbinding: azureidentitydemo
+```  
+
 ## Install demo application ##
+
+There is already a demo application implemented in ASP.NET Core to demo the usage of AAD Pod Identity. The application is a simple REST API that loads its settings from the above created Azure key vault. You can find the application [here](src/aadpodidentity/src/AadPodIdentityDemoApi).
+The application uses the [Options Pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-2.2) to load application settings into a simple object.
+
+```C#
+public class SettingsOptions
+{
+    public string ValueOne { get; set; }
+    public string ValueTwo { get; set; }
+}
+```
+
+The binding from the settings to the SettingsObject is configures in [Startup.cs](src/aadpodidentity/src/AadPodIdentityDemoApi/Startup.cs).
+
+```C#
+services.Configure<SettingsOptions>(options => Configuration.Bind("Settings", options));
+```
+
+To load settings from an Azure key vault, ASP.NET Core must be configured in [Program.cs](src/aadpodidentity/src/AAdPodIdentityDemoApi/Program.cs)
+
+```C#
+public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .ConfigureAppConfiguration((ctx, builder) => 
+                {
+                    var config = builder.Build();
+                    var kvurl = config["KeyVault:BaseUrl"];
+                    var tokenProvider = new AzureServiceTokenProvider();
+                    var kvClient = new KeyVaultClient((authority, resource, scope) => tokenProvider.KeyVaultTokenCallback(authority, resource, scope));
+                    builder.AddAzureKeyVault(kvurl, kvClient, new DefaultKeyVaultSecretManager());
+                });
+```
+
+You can see that a special component named AzureServiceTokenProvider is used. This component is responsible to acquire a token on behalf of your user-assigned identity to access the Azure key vault.
+
+
 
 ```Shell
 ToDo
