@@ -177,4 +177,4 @@ spec:
       maxEjectionPercent: 100
 ```
 
-Now check the application again and see how errors are immediately thrown when runnning the number calculation in a loop (and it's hitting the "timeout service" twice).
+Now check the application again and see how errors are immediately thrown when running the number calculation in a loop (and it's hitting the "timeout service" twice in a short period of time).
