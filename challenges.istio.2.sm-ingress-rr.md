@@ -1,6 +1,6 @@
 # Configure Ingress Routes and Request Routing #
 
-> Need help? All neccessary files are [here :blue_book:](hints/yaml/challenge-2/request-routing)!
+> Need help? All neccessary files are [here :blue_book:](hints/yaml/challenge-istio/request-routing)!
 
 ## Here is what you will learn ##
 

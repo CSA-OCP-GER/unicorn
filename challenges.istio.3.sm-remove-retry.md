@@ -1,6 +1,8 @@
 # Remove Slow/Buggy Containers #
 
-> Need help? All neccessary files are [here :blue_book:](hints/yaml/challenge-2/poolejector)!
+> Need help? All neccessary files are [here :blue_book:](hints/yaml/challenge-istio/poolejector)!
+
+**!! DUE TO A BUG CURRENTLY EXISTING ISTIO, THIS EXAMPLE WON'T FULLY WORK !!**
 
 ## Deploy new JS Backend (with errors) ##
 
@@ -37,7 +39,7 @@ spec:
             value: "80"
 ```
 
-[Deployment File :blue_book:](hints/yaml/challenge-2/poolejector/c2-jscalcerror-v3-error.yaml)!
+[Deployment File :blue_book:](hints/yaml/challenge-istio/poolejector/c2-jscalcerror-v3-error.yaml)!
 
 ## Add Destionation Rules ##
 
@@ -61,7 +63,7 @@ spec:
       version: v3-error
 ```
 
-[Deployment File :blue_book:](hints/yaml/challenge-2/poolejector/c2-destination-rule-error.yaml)!
+[Deployment File :blue_book:](hints/yaml/challenge-istio/poolejector/c2-destination-rule-error.yaml)!
 
 ## Include Error-Backend in Request Routing ##
 
@@ -94,7 +96,7 @@ spec:
       weight: 50
 ```
 
-[Deployment File :blue_book:](hints/yaml/challenge-2/poolejector/c2-ingress-rr-v3-error.yaml)!
+[Deployment File :blue_book:](hints/yaml/challenge-istio/poolejector/c2-ingress-rr-v3-error.yaml)!
 
 ## See how errors are thrown ##
 

@@ -72,7 +72,7 @@ prometheus                 1         1         1            1           3m
 
 ## Base Deployment for Sample Application ##
 
-### Install a Kubernetes namespace for Challenge-2 ###
+### Install a Kubernetes namespace for Challenge-Istio ###
 
 ```shell
 $ kubectl create namespace challengeistio
