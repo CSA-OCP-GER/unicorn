@@ -28,14 +28,13 @@ Istio version >= 1.0.0 and Kubernetes >= 1.10.6.
 
 ## Here's what you'll learn ##
 
-1. [How to install Istio in your AKS cluster](challenges.istio.1.sm-installation.md)
+1. [How to install Istio into your AKS cluster](challenges.istio.1.sm-installation.md)
 1. [How to configure ingress routes and request routing](challenges.istio.2.sm-ingress-rr.md)
 1. [How to remove slow/buggy containers temporarily and implement retry strategies](challenges.istio.3.sm-remove-retry.md)
 1. [How to implement the Circuit Breaker pattern](challenges.istio.4.sm-circuitbreaker.md)
 1. [How to gain insights about your applications routes](challenges.istio.5.sm-insights.md)
 1. [How to play with fault injection to challenge your services](challenges.istio.6.sm-faultinjection.md)
 1. [How to test new service versions with request mirroring](challenges.istio.7.sm-requestmirroring.md)
-1. [How to implement the Canary Deployment pattern with Istio](challenges.istio.8.sm-canary.md)
 1. [How to handle external service calls / Egress](challenges.istio.9.sm-egress.md)
 
 ## How Istio works ##
@@ -48,6 +47,6 @@ More details can be found [here](https://istio.io/docs/concepts/what-is-istio/ov
 
 ## The Cost of Using Istio ##
 
-Using Istio is not expansive. It's written in Go an adds little overhead to your architecture / application. The performance you **may** lose should be paid for by the increase of developer productivity and the fact that applications will run more robust inside the cluster, when you implement features like fault injection / retries / circuit breakers etc.
+Using Istio is -most of the time - not expansive...as always, it depends on what you are doing with it. It's written in Go an adds overhead to your architecture / application. The performance you **may** lose should be paid for by the increase of developer productivity and the fact that applications will run more robust inside the cluster, when you implement features like fault injection / retries / circuit breakers etc.
 
 And don't forget the fact, that it'll make you sleep better at night :wink:
