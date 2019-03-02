@@ -208,3 +208,66 @@ Push the image to your registry.
 ```Shell
 docker push <your registry name>.azurecr.io/aadpodidentitydemoapi:1.0
 ```
+
+Deploy the Demo Application.
+Open the [deployment yaml-file](src/aadpodidentity/deployment/demoapi.yaml) and replace the value of the environment variable ```KeyVault__BaseUrl``` with the url of your key vault and specify the secret to access your Azure container registry.
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: aadpodidentitydemoapibackend
+spec:
+  replicas: 3
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        name: aadpodidentitydemoapibackend
+        app: aadpodidentitydemoapi
+        aadpodidbinding: azureidentitydemo
+    spec:
+      containers:
+      - name: aadpodidentitydemoapi
+        image: anmock.azurecr.io/aadpodidentitydemoapi:1.0
+        env:
+          - name: KeyVault__BaseUrl
+            value: "<your keyvault url e.g.: https://myvault.vault.azure.net>"
+        ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP 
+      imagePullSecrets:
+        - name: <your docker-registry secret>
+```
+
+Run the ```kubectl apply``` command.
+
+```Shell
+kubectl apply -f .\demoapi.yaml
+```
+
+Get the IP address of the demoapi service using kubectl.
+
+```Shell
+kubectl get service
+```
+
+```Shell
+NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)        AGE
+aadpodidentitydemoapisvc   LoadBalancer   10.0.206.148   <public IP>   80:32073/TCP   1d
+```
+
+Open a browser and navigate to ```http://<public IP>/swagger``` and try out the GET http request ```/api/settings```. The values stored in your key vault are returned.
+
+```Json
+{
+  "valueOne": "DemoValueOne",
+  "valueTwo": "DemoValueTwo"
+}
+```
