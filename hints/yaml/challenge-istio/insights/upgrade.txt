@@ -1,0 +1,15 @@
+helm upgrade <RELEASE_NAME> install/kubernetes/helm/istio -f <VALUES_FILE>
+e.g.:
+helm upgrade istio install/kubernetes/helm/istio -f .\install\kubernetes\helm\istio\values.yaml
+
+Values: 
+
+grafana:
+  enabled: true
+
+grafana:
+  service:
+    type: LoadBalancer
+
+kiali:
+  enabled: true

@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jscalcbackend-egress-v1
+  namespace: challengeistio
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        name: jscalcbackend-egress
+        app: backend
+        version: v4
+    spec:
+      containers:
+      - name: jscalcbackend-egress
+        image: csaocpger/jscalcbackend-egress:1.0
+        ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+        env: 
+          - name: "PORT"
+            value: "80"

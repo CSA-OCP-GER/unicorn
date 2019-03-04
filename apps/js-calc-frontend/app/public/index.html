@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Calculator</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="angular.min.js"></script>
+    <script src="client.js"></script>
+    <script src="appinsights.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+</head>
+
+<body class="site">
+    <div class="jumbotron">
+        <div class="container">
+            <h2 class="display-5">Hello Prime Factor Calculator</h2>
+            <p>This is a sample application for demonstrating multi container applications on Kubernetes in Azure.</p>
+            <p>It is calculating prime factors in Dotnet Core, NodeJS and GO!</p>
+            <p>
+                <a class="btn btn-primary" href="https://github.com/csa-ocp-ger/unicorn" role="button">Learn more
+                    &raquo;</a>
+            </p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="starter-template">
+            <div ng-app="CalculatorApp" ng-controller="CalculatorController" class="btn-group">
+                <form>
+                    <div class="form-group">
+                        <label for="randomStart">Random start number</label>
+                        <input type="number" class="form-control" id="randomStart" placeholder="42" value="42" ng-model="id">
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="loop" value "loop" checked="true" name="loop">keep posting
+                            in a loop</input>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="lookFrequency">loop frequency {{ frequency }} ms</label>
+                        <input type="range" ng-model="frequency" min="50" max="2000" value="500" step="50" width="200">
+                    </div>
+                    <p>
+                        <button class="btn btn-success" ng-click="Calculate()" type="button" id="triggerButton" value="Calculate">Request
+                            prime factors</button>
+                    </p>
+                </form>
+                <div class="row">
+                    <h2>Result</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Version</th>
+                                <th>Value</th>
+                                <th>Host</th>
+                                <th>Timestamp</th>
+                                <th ng-show="result.timetocalc">Ticks To Calc</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ result.__v }}</td>
+                                <td>{{ result.value }}</td>
+                                <td>{{ result.host }}</td>
+                                <td>{{ result.timestamp }}</td>
+                                <td ng-show="result.timetocalc">{{ result.timetocalc }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <h2>Errors
+                            <button class="btn btn-danger btn-sm pull-right" ng-click="ClearErrors()" type="button" id="clearButton"
+                                value="Clear" style="display:inline">Clear Errors</button>
+                        
+                    </h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Error</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="error in errors">
+                                <td>{{ error.date }}</td>
+                                <td>{{ error.status }}</td>
+                                <td style="color: red">{{ error.data.data }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+</body>
+
+</html>

@@ -5,8 +5,8 @@
         <v-alert :value="true" type="success">You are successfully authenticated against Azure Active Directory.</v-alert>
         <v-card>
           <v-list two-line>
-            <template v-for="(item, index) in tokenValues">
-              <v-list-tile :key="item.key" @click>
+            <template v-for="(item) in tokenValues">
+              <v-list-tile :key="item.key">
                 <v-list-tile-content>
                   <v-list-tile-title v-html="item.value"></v-list-tile-title>
                   <v-list-tile-sub-title v-html="item.key"></v-list-tile-sub-title>

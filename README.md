@@ -6,7 +6,7 @@ Welcome to **Project Unicorn** - a hands on workshop to widen your skills within
 
 ## What we want to achieve ##
 
-1. [Challenge 1](challenges.1.aad.md) - Create a Kubernetes cluster with Azure Active Directory integration
+1. [Challenge 1](challenges.aad.md) - Create a Kubernetes cluster with Azure Active Directory integration
 1. ..
 1. ...
 
