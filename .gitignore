@@ -67,3 +67,10 @@ src/aadpodidentity/src/AadPodIdentityDemoApi/obj/
 apps/netcore-calc-backend/obj/**
 apps/netcore-calc-backend/bin/**
 .DS_Store
+/src/sidecar/src/.vs
+/src/sidecar/src/DemoApi/bin/
+/src/sidecar/src/DemoApi/obj
+/src/sidecar/src/DemoApi/DemoApi.csproj.user
+/src/sidecar/src/SidecarProxy/bin/
+/src/sidecar/src/SidecarProxy/obj
+/src/sidecar/src/SidecarProxy/SidecarProxy.csproj.user
