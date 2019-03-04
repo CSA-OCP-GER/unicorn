@@ -13,7 +13,7 @@ The solution to such scenarios is the **Circuit Breaker** pattern. When the numb
 
 ## Deploy Service with a timeout / destination rules / routing rules ##
 
-First, we need to deploy a service that simulates the "high latency" problem.
+First, we need to deploy a service that simulates the "high latency" problem. We therefore deploy a pod called `jscalctimeout` to simulate a service that has high latency.
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -81,7 +81,7 @@ spec:
             value: "80"
 ```
 
-Next, deploy the destination rules.
+Next, deploy the destination rules. to be able to route request to the new service.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -103,7 +103,7 @@ spec:
       version: v3-timeout
 ```
 
-...finally, the routing rules.
+...finally, the routing information.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -143,7 +143,7 @@ In a "highly frequented service" scenario, this particular service can be a prob
 
 ## Deploy Circuit Breaker rules ##
 
-We are now going to implement the "Circuit Breaker" pattern, to immediatly send an error to the caller when more than one http request is in pending state.
+We are now going to implement the "Circuit Breaker" pattern, to immediately send an error to the caller when more than one http request is in pending state.
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3

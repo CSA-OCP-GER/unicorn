@@ -108,7 +108,7 @@ spec:
             value: "80"
 ```
 
-Add destination rule and VirtaulService definition:
+Add destination rule and VirtualService definition:
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -159,7 +159,7 @@ spec:
       weight: 50
 ```
 
-Check the website and call the calculation service a few times. See how errors appear stating that the external service call falied.
+Check the website and call the calculation service a few times. See how errors appear stating that the external service call failed.
 
 ## Add ServiceEntry ##
 

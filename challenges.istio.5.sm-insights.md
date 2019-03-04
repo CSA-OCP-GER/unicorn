@@ -3,13 +3,13 @@
 When operating a microservice application, you quickly come to the point, where you want to have some insights of the services running in your cluster. With Istio / Kubernetes, there are several options to achive this. 
 
 - Azure Application Insights / Azure Monitor
-  - we do not cover that topic in this workshop. If you want to learn more about these options, have a look at the predecessor of the workshop (Chapter 4): https://github.com/CSA-OCP-GER/phoenix/blob/master/challenges.4.md
+  - we do not cover that topic in this workshop. If you want to learn more about these options, have a look at the predecessor of this workshop (Chapter 4): https://github.com/CSA-OCP-GER/phoenix/blob/master/challenges.4.md
 - Prometheus
   - open-source systems monitoring and alerting toolkit
 - Grafana
   - open source metric analytics & visualization suite
 - Kiali
-  - new kid on the block, built with Istio service-mesh in mind
+  - new kid on the block :) built with Istio service-mesh in mind
 
 In our example, we are going to use the "built-in" options Prometheus/Grafan and Kiali.
 
@@ -23,7 +23,7 @@ In our example, we are going to use the "built-in" options Prometheus/Grafan and
 
 ## Enable Grafana / Prometheus ##
 
-We installed Istio with a Helm chart that already contains all the information/configuration to run Prometheus/Grafan...it just isn't installed by default. So we need to adjust thee `values.yaml` file to fit our needs. 
+We installed Istio with a Helm chart that already contains all the information/configuration to run Prometheus/Grafana...it just isn't installed by default. So we need to adjust the `values.yaml` file to fit our needs. 
 
 Open `values.yaml` under `install/kubernetes/helm/istio` and adjust the following values:
 
@@ -36,7 +36,7 @@ grafana:
   service:
     type: LoadBalancer
 ``` 
-> It is NOT recommended to expose Grafana Dashboard via a service of the `LoadBalancer`. In production environments, use at least a custom ingress definition with e.g. IP Whitelisting
+> It is NOT recommended to expose Grafana Dashboard via a service of type `LoadBalancer`. In production environments, use at least a custom ingress definition with e.g. IP Whitelisting
 
 When finished editing, upgrade your Istio release:
 
@@ -44,7 +44,7 @@ When finished editing, upgrade your Istio release:
 $ helm upgrade istio install/kubernetes/helm/istio -f .\install\kubernetes\helm\istio\values.yaml
 ```
 
-Now wait appr. one minute for Kubernetes to receive a public IP address for the Grafana service. You can check the status via the following query (wait until `EXTERNAL-IP` gets a proper value for `grafana`)
+Now wait approximately one minute for Kubernetes to receive a public IP address for the Grafana service. You can check the status via the following query (wait until `EXTERNAL-IP` gets a proper value for `grafana`)
 
 ```shell
 $ kubectl get svc -n istio-system -w
@@ -60,15 +60,15 @@ prometheus               ClusterIP      10.0.18.114    <none>          9090/TCP 
 
 Open your browser on http://\<EXTERNAL-IP\>:3000. 
 
-> Todos: 
->
-> First, run the application in **loop-mode** and put some load on your cluster.
->
-> Now...
-> - get familiar with the Grafana Dashboard and the preconfigured charts (under `Home` dropdown > Istio dashboards)
-> - see how your services are consuming CPU / memory / disk resources
-> - measure incoming requests
-> "deep-dive" into measures of one service
+Todos for you: 
+
+First, run the application in **loop-mode** and put some load on your cluster.
+
+Now...
+- get familiar with the Grafana Dashboard and the preconfigured charts (under `Home` dropdown > Istio dashboards)
+- see how your services are consuming CPU / memory / disk resources
+- measure incoming requests
+- "deep-dive" into measures of one service
 
 ![Grafana Service Dashboard](/img/grafana_service.png)
 *Sample Dashboard*
@@ -115,14 +115,14 @@ $ kubectl port-forward <KIALI_POD_NAME> 20001:20001 -n istio-system
 
 Now, open your browser at http://localhost:20001/console/overview and login with the credentials you set in the `values.yaml` file.
 
-> Todos: 
->
-> First, run the application in **loop-mode** and put some load on your cluster.
->
-> Now...
-> - get familiar with Kiali (open *Application*, *Workload* and *Services* views) and see, what metrics and information Kiali can provide for your service mesh
-> - open the service map under *Graph* and display *Service Nodes* and *Traffic Animation*
-> - get detailed information about services by clicking on a node in the graph
+Todos for you: 
+
+First, run the application in **loop-mode** and put some load on your cluster.
+
+Now...
+- get familiar with Kiali (open *Application*, *Workload* and *Services* views) and see, what metrics and information Kiali can provide for your service mesh
+- open the service map under *Graph* and display *Service Nodes* and *Traffic Animation*
+- get detailed information about services by clicking on a node in the graph
 
 ![Kiali Overview](/img/kiali_overview.png)
 
