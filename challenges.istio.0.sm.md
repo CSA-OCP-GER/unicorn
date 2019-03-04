@@ -35,7 +35,7 @@ Istio version >= 1.0.0 and Kubernetes >= 1.10.6.
 1. [How to gain insights about your applications routes](challenges.istio.5.sm-insights.md)
 1. [How to play with fault injection to challenge your services](challenges.istio.6.sm-faultinjection.md)
 1. [How to test new service versions with request mirroring](challenges.istio.7.sm-requestmirroring.md)
-1. [How to handle external service calls / Egress](challenges.istio.9.sm-egress.md)
+1. [How to handle external service calls / Egress](challenges.istio.8.sm-egress.md)
 
 ## How Istio works ##
 
