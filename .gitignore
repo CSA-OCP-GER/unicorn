@@ -62,6 +62,12 @@ typings/
 .vscode/launch.json
 .vscode/tasks.json
 hints/yaml/challengeistio/poolejector/test.json
+
+src/aadpodidentity/src/.vs/
+src/aadpodidentity/src/AadPodIdentityDemoApi/Properties/
+src/aadpodidentity/src/AadPodIdentityDemoApi/bin/
+src/aadpodidentity/src/AadPodIdentityDemoApi/obj/
+
 apps/netcore-calc-backend/obj/**
 apps/netcore-calc-backend/bin/**
 .DS_Store
