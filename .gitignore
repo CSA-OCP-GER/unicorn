@@ -60,14 +60,10 @@ typings/
 # next.js build output
 .next
 
-/src/aadpoditentity/src/.vs
-/src/aadpoditentity/src/AadPodIdentityDemoApi/AadPodIdentityDemoApi.csproj.user
-/src/aadpoditentity/src/AadPodIdentityDemoApi/appsettings.json
-/src/aadpoditentity/src/AadPodIdentityDemoApi/appsettings.Development.json
-/src/aadpodidentity/src/AadPodIdentityDemoApi/bin
-/src/aadpodidentity/src/AadPodIdentityDemoApi/obj
-/src/aadpodidentity/src/AadPodIdentityDemoApi/Properties
+src/aadpodidentity/src/.vs/
+src/aadpodidentity/src/AadPodIdentityDemoApi/Properties/
+src/aadpodidentity/src/AadPodIdentityDemoApi/bin/
+src/aadpodidentity/src/AadPodIdentityDemoApi/obj/
 apps/netcore-calc-backend/obj/**
 apps/netcore-calc-backend/bin/**
 .DS_Store
-
