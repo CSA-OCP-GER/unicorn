@@ -15,7 +15,7 @@ Open a shell and run the following ```kubectl create``` command:
 kubectl create -f https://raw.githubusercontent.com/Azure/aad-pod-identity/1.3.0-mic-1.4.0-nmi/deploy/infra/deployment.yaml
 ```
 
-If you have an RBAC enabled cluster run the following ````kubectl create``` command:
+If you have an RBAC enabled cluster run the following ```kubectl create``` command:
 
 ```Shell
 kubectl create -f https://raw.githubusercontent.com/Azure/aad-pod-identity/1.3.0-mic-1.4.0-nmi/deploy/infra/deployment-rbac.yaml
@@ -31,7 +31,7 @@ Remember the client id, principal id and resource id for the identity.
 az identity create -g <resource-groupname> -n <managedidentity-resourcename>
 ```
 
-Now you have created a manaed identity with the name ```managedidentity-name```. Take a look at your ```resource-groupname```. The identity is listed as an Azure resource.
+Now you have created a managed identity with the name ```managedidentity-name```. Take a look at your resource group. The identity is listed as an Azure resource.
 
 ## Assign Reader Role to the new created identity ## 
 
