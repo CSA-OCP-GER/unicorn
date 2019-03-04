@@ -1,6 +1,17 @@
 # External Service Calls #
 
-Deploy baseline workload
+By default, Istio-enabled services are unable to access URLs outside of your cluster, because the pod uses iptables to transparently redirect all outbound traffic to the sidecar proxy, which only handles intra-cluster destinations.
+
+This is why external calls will fail by default. You have to explicitly enable them by "whitlisting" these services via `ServiceEntry` definitions.
+
+## Here is what you will learn ##
+
+- Learn how create `ServiceEntry` definitions
+- Enable Istio services to call external services
+
+## Setup ##
+
+Deploy baseline workload (VirtaulService and DestinationRule):
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -44,9 +55,25 @@ spec:
       version: v2
 ```
 
-Check, if the application is running as expected.
+Check in your browser, if the application is running as expected.
 
-Now, deploy the new service (calling https://httpbin.org/post)
+## Test a service that wants to make a request outside of your service mesh ##
+
+Deploy the new service *jscalcbackend-egress*. That service will be making a service call to https://httpbin.org/post, see:
+
+```js
+axios.post('https://httpbin.org/post', {}, {
+    headers: {
+        accept: 'application/json'
+    }
+}).then(() => {
+    return res.send(serverResult.toString());
+}).catch(() => {
+    return res.send(500, "Failed to call httpbin resource. Adjust egress rules!");
+});
+```
+
+Deploy pods:
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -81,7 +108,7 @@ spec:
             value: "80"
 ```
 
-add destination rule and ingress/vs
+Add destination rule and VirtaulService definition:
 
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -132,7 +159,9 @@ spec:
       weight: 50
 ```
 
-Check the website and call a few times the calculation service. See how errors appear stating that the external call falied.
+Check the website and call the calculation service a few times. See how errors appear stating that the external service call falied.
+
+## Add ServiceEntry ##
 
 Now, let's add the egress definition. Please be aware that, if the external service must be reached via TLS, you also need to define a VirtualService.
 
@@ -171,4 +200,4 @@ spec:
       weight: 100
 ```
 
-See how the service calls are now working.
+Check your browser again and see how the service calls are now working.
