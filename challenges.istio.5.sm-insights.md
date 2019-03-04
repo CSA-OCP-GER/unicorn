@@ -13,6 +13,14 @@ When operating a microservice application, you quickly come to the point, where 
 
 In our example, we are going to use the "built-in" options Prometheus/Grafan and Kiali.
 
+## Here is what you will learn ##
+
+- Install Prometheus/Grafana components in your cluster
+- Learn how to use the Grafana Dashboard
+- Install Kiali service in your cluster
+- Learn how to use the Kialia Graph
+- Gain insights about "the moving parts" your service mesh
+
 ## Enable Grafana / Prometheus ##
 
 We installed Istio with a Helm chart that already contains all the information/configuration to run Prometheus/Grafan...it just isn't installed by default. So we need to adjust thee `values.yaml` file to fit our needs. 

@@ -2,7 +2,11 @@
 
 > Need help? All neccessary files are [here :blue_book:](hints/yaml/challenge-istio/poolejector)!
 
-**!! DUE TO A BUG CURRENTLY EXISTING ISTIO, THIS EXAMPLE WON'T FULLY WORK !!**
+**!! DUE TO A BUG/MISSING FEATURE CURRENTLY EXISTING ISTIO, THIS EXAMPLE WON'T FULLY WORK !!**
+
+## Here is what you will learn ##
+
+- use Istio service mesh to automatically remove services from your application that throw errors
 
 ## Deploy new JS Backend (with errors) ##
 

@@ -4,7 +4,7 @@
 
 ## Here is what you will learn ##
 
-- get to know the types of possible failure injection with Istio
+- get to know the types of possible failure injections with Istio
 - add failures to the backend service
 
 ## Reset application ##
