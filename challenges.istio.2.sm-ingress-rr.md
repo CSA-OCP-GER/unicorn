@@ -136,7 +136,6 @@ spec:
           subset: v1
 ```
 
-Check Routing Rules and Gateway Installation
 
 ```shell
 $ kubectl apply -f .\c2-ingress-rr.yaml
@@ -146,6 +145,8 @@ virtualservice.networking.istio.io "app-vs" created
 virtualservice.networking.istio.io "frontend-vs" created
 virtualservice.networking.istio.io "backend-vs" created
 ```
+
+Check Routing Rules and Gateway Installation
 
 ```shell
 $ kubectl get virtualservices -n challengeistio
@@ -159,9 +160,14 @@ $ kubectl get gateways -n challengeistio
 
 NAME               AGE
 frontend-gateway   1m
+```
 
+Let's determine the IP-address of the Istio Ingress-Gateway.
+
+```shell
 $ kubectl describe svc/istio-ingressgateway -n istio-system
 ```
+
 Copy the Load Balancer IP of the Ingress Gateway an open the browser: http://<INGRESS_GATEWAY_IP>/
 
 You should see something like this:
@@ -251,7 +257,7 @@ spec:
         weight: 50
 ```
 
-Check --> 50% from v2
+Check your browser! Approximately 50% of the traffic should be routed to v2.
 
 ## Header-based Routing ##
 

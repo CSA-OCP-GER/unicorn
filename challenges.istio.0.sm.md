@@ -4,7 +4,7 @@
 
 In this challenge you will install a service mesh in your Azure AKS cluster and implement most of the features Istio provides.
 
-> Why would you want such a mesh? There are many reasons, but most important is the fact that you can add - among others - some complicated routing, loadbalancing, fault injection etc. scenarios that you couldn't achieve otherwise or with a huge effort.
+> Why would you want such a mesh? There are many reasons, but most important is the fact that you can add - among others - some complicated routing, loadbalancing, fault injection etc. scenarios that you couldn't achieve otherwise or only with a huge effort.
 
 Istio adds:
 
@@ -47,6 +47,6 @@ More details can be found [here](https://istio.io/docs/concepts/what-is-istio/ov
 
 ## The Cost of Using Istio ##
 
-Using Istio is -most of the time - not expansive...as always, it depends on what you are doing with it. It's written in Go an adds overhead to your architecture / application. The performance you **may** lose should be paid for by the increase of developer productivity and the fact that applications will run more robust inside the cluster, when you implement features like fault injection / retries / circuit breakers etc.
+Using Istio is - most of the time - not expansive...as always, it depends on what you are doing with it. It's written in Go an adds overhead to your architecture / application. The performance you **may** lose should be paid for by the increase of developer productivity and the fact that applications will run more robust inside the cluster, when you implement features like fault injection / retries / circuit breakers etc.
 
 And don't forget the fact, that it'll make you sleep better at night :wink:
