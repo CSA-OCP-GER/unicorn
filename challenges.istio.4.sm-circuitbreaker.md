@@ -4,7 +4,7 @@ In microservice architectures, service calls - due to their nature being remote 
 
 The solution to such scenarios is the **Circuit Breaker** pattern. When the number of consecutive failures crosses a threshold, the circuit breaker trips, and for the duration of a timeout period all attempts to invoke the remote service will fail immediately. After the timeout expires the circuit breaker allows a limited number of test requests to pass through. If those requests succeed the circuit breaker resumes normal operation. Otherwise, if there is a failure the timeout period begins again.
 
-![Istio Service Mesh](/img/circuitbreaker.png)
+![Circuit Breaker](/img/circuitbreaker.png)
 
 ## Here is what you will learn ##
 
