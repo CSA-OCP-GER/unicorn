@@ -59,6 +59,11 @@ typings/
 
 # next.js build output
 .next
+
+src/aadpodidentity/src/.vs/
+src/aadpodidentity/src/AadPodIdentityDemoApi/Properties/
+src/aadpodidentity/src/AadPodIdentityDemoApi/bin/
+src/aadpodidentity/src/AadPodIdentityDemoApi/obj/
 apps/netcore-calc-backend/obj/**
 apps/netcore-calc-backend/bin/**
 .DS_Store
