@@ -1,0 +1,65 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: frontend-gateway
+  namespace: challengeistio 
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app-vs
+  namespace: challengeistio  
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - frontend-gateway
+  http:
+  - match:
+    - uri:
+        exact: /api/calculation
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: calcfrontendsvc
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontend-vs
+  namespace: challengeistio
+spec:
+  hosts:
+  - calcfrontendsvc
+  http:
+    - route:
+      - destination:
+          host: calcfrontendsvc
+          subset: v2
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: backend-vs
+  namespace: challengeistio
+spec:
+  hosts:
+  - calcbackendsvc
+  http:
+    - route:
+      - destination:
+          host: calcbackendsvc
+          subset: v1
