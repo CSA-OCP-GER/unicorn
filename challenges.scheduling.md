@@ -1,6 +1,6 @@
 # Advanced Scheduling / Resource Management #
 
-Kubernetes has some advanced concepts when it comes to resource handling and scheduling of your workloads. In this challenge, you will learn about how scheduling works in Kubernetes and how you can influence which nodes will be selected and how pods can be prioritized. 
+Kubernetes has some advanced concepts when it comes to resource handling and scheduling of your workloads. In this challenge, you will learn about how scheduling works in Kubernetes, how you can influence which nodes will be selected and how pods can be prioritized. 
 
 ## Advanced Scheduling ##
 
@@ -24,7 +24,7 @@ Currently, there are two types of node affinity:
 1. `requiredDuringSchedulingIgnoredDuringExecution` - being the "hard" requirement
 1. `preferredDuringSchedulingIgnoredDuringExecution` - being the "soft" requirement
 
-"IgnoredDuringExecution" means that node labels bein changed at runtime won't affect pods currently running on that specific node.
+"IgnoredDuringExecution" means that node labels being changed at runtime won't affect pods currently running on that specific node.
 
 #### Sample #### 
 
@@ -93,9 +93,13 @@ Kubernetes supports the following operators when defining rules:
 
 ### Pod Affinity / Anti-Affinity ###
 
+Pod Affinity / Pod Anti-Affinity work the same way as Node Affinity, except that scheduling is based on labels on pods that are already running on one node rather than node labels. The rules are of the form “this pod should (or, in the case of anti-affinity, should not) run on *node X* if that *node X* is already running one or more pods that meet rule *Y*”. 
 
+*Node X* is determined by a `topologyKey` and *Y* is expressed as a label seletor.
 
-#### Basic sample ####
+> You can add a list of namespaces, the pod selectors will work on. By default, it will query only pods in the current namespace!
+
+#### Basic sample for anti-affinity ####
 
 As a sample for anti-affinity, imagine an application that needs a Redis cache in the cluster. We want to guarantee, that the replicas of the Redis cluster won't be scheduled on the same node.
 
@@ -126,12 +130,40 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: redis-server
-        image: redis:3.2-alpine
+        image: redis
 ```
 
 ### Pod Priority ### 
 
-..
+Priority indicates the importance of a pod relative to other pods. A pod priority influences the scheduling of a pod and out-of-resource eviction ordering on the node.
+
+#### Sample ####
+
+First, let's create two priority classes we can use when scheduling pods - one "high" and one "low"-prio class.
+
+> Note: A PriorityClass is non-namespaced.
+
+```yaml
+apiVersion: scheduling.k8s.io/v1beta1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 100
+globalDefault: false
+description: "This is the high-prio class."
+---
+apiVersion: scheduling.k8s.io/v1beta1
+kind: PriorityClass
+metadata:
+  name: low-priority
+value: 10
+globalDefault: true
+description: "This is the high-prio class."
+```
+
+The second PriorityClass is marked as "globalDefault = true", which means pods with no priorityClass get "low-priority" by default (--> a value of `10`). 
+
+
 
 ## Resource Limits ##
 
