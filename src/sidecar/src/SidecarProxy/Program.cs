@@ -17,8 +17,13 @@ namespace SidecarProxy
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            var port = Environment.GetEnvironmentVariable("PROXY_PORT");
+
+            return WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .UseUrls($"http://0.0.0.0:{port}");
+        }
     }
 }

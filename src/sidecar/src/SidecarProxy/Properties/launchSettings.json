@@ -14,6 +14,7 @@
       "launchBrowser": true,
       "launchUrl": "swagger/",
       "environmentVariables": {
+        "PROXY_PORT": "59003",
         "DEMOAPI_PORT": "59174",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
