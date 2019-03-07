@@ -11,6 +11,9 @@
   - get admin credentials for the cluster
   - login with an AAD user
 
+![AAD Integration](/img/aad_k8s.png)
+*AAD Login Flow*
+
 ## Create AAD applications for the Kubernetes cluster and the client ##
 
 > ***Optional:*** If you don't want to use your organization's AAD, create a new tenant for testing purposes and afterwards switch to that directory: <https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant#create-a-new-azure-ad-tenant>
