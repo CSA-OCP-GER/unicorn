@@ -147,7 +147,7 @@ First, let's create two priority classes we can use when scheduling pods - one "
 apiVersion: scheduling.k8s.io/v1beta1
 kind: PriorityClass
 metadata:
-  name: high-priority
+  name: myhigh-priority
 value: 100
 globalDefault: false
 description: "This is the high-prio class."
@@ -155,17 +155,83 @@ description: "This is the high-prio class."
 apiVersion: scheduling.k8s.io/v1beta1
 kind: PriorityClass
 metadata:
-  name: low-priority
+  name: mylow-priority
 value: 10
-globalDefault: true
+globalDefault: false
 description: "This is the high-prio class."
 ```
 
-The second PriorityClass is marked as "globalDefault = true", which means pods with no priorityClass get "low-priority" by default (--> a value of `10`). 
+Now, we need to simulate a situation, where pods can't be scheduled anymore. Therefore, we deploy many pods, that alltogether request a lot of CPU.
 
+```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: lowprio-pods
+spec:
+  replicas: 30
+  template:
+    metadata:
+      labels:
+        name: lowprio-pods
+    spec:
+      containers:
+        - name: lowprio-pods
+          image: k8s.gcr.io/pause:2.0
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "64Mi"
+            limits:
+              memory: "128Mi"
+              cpu: "2000m"
+      priorityClassName: mylow-priority
+```
 
+You can see, that some of the pods can't be scheduled, because Kubernetes reports low resources.
+
+Now, if we wanted to deploy further pods that definitely need to run, we wouldn't be able to do so - except: we can give them a higher priority which leads to evication of running pods with "low-priority".
+
+You can test the behavior by deploying two pods with the "myhigh-priority"
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: highprio-pods
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        name: highprio-pods
+    spec:
+      containers:
+        - name: highprio-pods
+          image: k8s.gcr.io/pause:2.0
+          resources:
+            requests:
+              cpu: "1000m"
+              memory: "64Mi"
+            limits:
+              memory: "128Mi"
+              cpu: "2000m"
+      priorityClassName: myhigh-priority
+```
+
+#### House-Keeping ####
+
+Delete the deployments and priority classes.
+
+```shell
+$ kubectl delete -f .\lowprio-pods.yaml
+$ kubectl delete -f .\highprio-pods.yaml
+$ kubectl delete -f .\priority-classes.yaml
+```
 
 ## Resource Limits ##
+
+
 
 ## Horizontal Scaling ?? ##
 
