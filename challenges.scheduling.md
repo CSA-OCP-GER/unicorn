@@ -384,9 +384,46 @@ $ kubectl delete -f stress-cpu.yaml
 $ kubectl delete -f stress-mem.yaml 
 ```
 
-## Horizontal Scaling ?? ##
+## Horizontal Scaling ##
 
-## Best Practices ##
+Every organisation running a Kubernetes cluster in production comes to the point where they have to think about auto-scaling workloads/services in their application. Fortunately, with the **Horizontal Pod Autoscaler** Kubernetes allows you to configure your deployments to scale horizontally. Kubernetes will track the load of existing pods and determine, if further pods have to be scheduled or not. 
 
-RunAsNonRoot
+We won't go into deep with HPA, but show you an exmaple of how you can achieve horizontal scaling.
 
+First, deploy an nginx pod with a service.
+
+```shell
+$ kubectl run nginx-worker --image=nginx --requests=cpu=200m --expose --port=80
+```
+
+Then add the Horizontal Pod Autoscaler (we use a pretty low CPU utilization limit to be able to see, how the HPA scales pods over time).
+
+```shell
+$ kubectl autoscale deployment nginx-worker --cpu-percent=5 --min=1 --max=10
+```
+
+Now, put some load on the service.
+
+```shell
+$ kubectl run -i --tty load-generator --image=busybox /bin/sh
+
+$ while true; do wget -q -O- http://nginx-worker.default.svc.cluster.local; done
+```
+
+See how the HPA works.
+
+```shell
+$ kubectl get hpa -w
+```
+
+You should see similar results (notice the *REPLICAS* column):
+
+![HPA](/img/hpa.png)
+
+Further information on how the algorithm works in detail can be found here:
+
+https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+
+#### House-Keeping ####
+
+Delete the deployments.
