@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: backend-vs
+  namespace: challengeistio
+spec:
+  hosts:
+  - calcbackendsvc
+  http:
+  - match:
+    - headers:
+        user-agent:
+          regex: .*Mobile.*
+    route:
+      - destination:
+          host: calcbackendsvc
+          subset: v2
+  - route:
+    - destination:
+        host: calcbackendsvc
+        subset: v1
+      weight: 50
+    - destination:
+        host: calcbackendsvc
+        subset: v3-timeout
+      weight: 50
