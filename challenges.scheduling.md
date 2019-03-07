@@ -60,22 +60,22 @@ spec:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: team
-            operator: In
-            values:
-            - blue
+          - matchExpressions:
+              - key: team
+                operator: In
+                values:
+                  - "blue"
       preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 1
-        preference:
-          matchExpressions:
-          - key: failure-domain.beta.kubernetes.io/zone
-            operator: In
-            values:
-            - 1
+        - weight: 1
+          preference:
+            matchExpressions:
+              - key: failure-domain.beta.kubernetes.io/zone
+                operator: In
+                values:
+                  - "1"
   containers:
-  - name: mypod-node-affinity
-    image: k8s.gcr.io/pause:2.0
+    - name: mypod-node-affinity
+      image: k8s.gcr.io/pause:2.0
 ```
 
 The rules above say, that the pod will be scheduled on nodes with the label "team=blue" (required rule) and preferably on a node which is in the "failure-domain 1" (preffered rule).
@@ -135,7 +135,9 @@ spec:
 
 ### Pod Priority ### 
 
-Priority indicates the importance of a pod relative to other pods. A pod priority influences the scheduling of a pod and out-of-resource eviction ordering on the node.
+**Priority** indicates the importance of a pod relative to other pods. A pod priority influences the scheduling of a pod and out-of-resource eviction ordering on the node - bottom line: by `PriorityClass`, you can define how important a pod is for your application - and Kubernetes will respect your settings.
+
+It is best to just see an example when it comes to working with pod priorities.
 
 #### Sample ####
 
@@ -162,6 +164,8 @@ description: "This is the high-prio class."
 ```
 
 Now, we need to simulate a situation, where pods can't be scheduled anymore. Therefore, we deploy many pods, that alltogether request a lot of CPU.
+
+>  Maybe you have to tweak the replicas-setting for your cluster to provoke that situation
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -231,7 +235,7 @@ $ kubectl delete -f .\priority-classes.yaml
 
 ## Resource Limits ##
 
-
+When it comes to deploying pods to your cluster, you can give Kubernetes some hints about the amount of resources (CPU / memory) your workload will need. As discussed above, these requests will be taken care of in the scheduling algorithm. So basically, you help the cluster deciding, if pods can still be created or not (or if e.g. the cluster autoscaler has to create new nodes to be able to fulfill your request).
 
 ## Horizontal Scaling ?? ##
 
