@@ -2,6 +2,15 @@
 
 Kubernetes has some advanced concepts when it comes to resource handling and scheduling of your workloads. In this challenge, you will learn about how scheduling works in Kubernetes, how you can influence which nodes will be selected and how pods can be prioritized. 
 
+## Here is what you will learn ##
+
+- get familiar with the Kubernetes scheduling algorithm
+- learn about node and affinity / anti-affinity
+- apply resource limits to workloads / namespaces
+- stress test your cluster
+- get to know pod priority classes and learn how they can help securing important workloads from being evicted when resources are low
+
+
 ## Advanced Scheduling ##
 
 The Kubernetes Scheduler is one of the master components that AKS manages for you. When it comes to a deployment of pods, the scheduler tries to find a node for each pod - one at a time. The algorithm works as follows:
@@ -48,7 +57,7 @@ Check, if labels have been applied:
 $ kubectl get nodes --show-labels
 ```
 
-Now, we are goin to deploy a pod with node affinity:
+Now, we are going to deploy a pod with node affinity:
 
 ```yaml
 apiVersion: v1
@@ -78,7 +87,7 @@ spec:
       image: k8s.gcr.io/pause:2.0
 ```
 
-The rules above say, that the pod will be scheduled on nodes with the label "team=blue" (required rule) and preferably on a node which is in the "failure-domain 1" (preffered rule).
+The rules above say, that the pod will be scheduled on nodes with the label "team=blue" (required rule) and preferably on a node which is in the "failure-domain 1" (prefered rule).
 
 Kubernetes supports the following operators when defining rules:
 
@@ -93,7 +102,8 @@ Kubernetes supports the following operators when defining rules:
 
 ### Pod Affinity / Anti-Affinity ###
 
-Pod Affinity / Pod Anti-Affinity work the same way as Node Affinity, except that scheduling is based on labels on pods that are already running on one node rather than node labels. The rules are of the form “this pod should (or, in the case of anti-affinity, should not) run on *node X* if that *node X* is already running one or more pods that meet rule *Y*”. 
+*Pod Affinity / Pod Anti-Affinity* work the same way as *Node Affinity*, except that scheduling is based on labels on pods that are already running on one node rather than node labels. The rules are of the form:
+> This pod should (or, in the case of anti-affinity, should not) run on *node X* if that *node X* is already running one or more pods that meet rule *Y*. 
 
 *Node X* is determined by a `topologyKey` and *Y* is expressed as a label seletor.
 
@@ -133,7 +143,7 @@ spec:
         image: redis
 ```
 
-Query the pods a show the node each pod is running on:
+Query the pods and show the node each pod is running on:
 
 ```shell
 $ kubectl get po -o wide
@@ -155,9 +165,9 @@ It is best to just see an example when it comes to working with pod priorities.
 
 #### Sample ####
 
-First, let's create two priority classes we can use when scheduling pods - one "high" and one "low"-prio class.
+First, let's create two priority classes we can use when scheduling pods - one "high"- and one "low"-priority class.
 
-> Note: A PriorityClass is non-namespaced.
+> Note: A PriorityClass is non-namespaced!
 
 ```yaml
 apiVersion: scheduling.k8s.io/v1beta1
@@ -179,7 +189,7 @@ description: "This is the high-prio class."
 
 Now, we need to simulate a situation, where pods can't be scheduled anymore. Therefore, we deploy many pods, that alltogether request a lot of CPU.
 
->  Maybe you have to tweak the replicas-setting for your cluster to provoke that situation
+>  Maybe you have to tweak the `replicas` setting for your cluster to provoke that situation
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -208,9 +218,9 @@ spec:
 
 You can see, that some of the pods can't be scheduled, because Kubernetes reports low resources.
 
-Now, if we wanted to deploy further pods that definitely need to run, we wouldn't be able to do so - except: we can give them a higher priority which leads to evication of running pods with "low-priority".
+Now, if we wanted to deploy further pods that definitely need to run, we wouldn't be able to do so - except: we can give them a higher priority which leads to eviction of running pods with "low-priority".
 
-You can test the behavior by deploying two pods with the "myhigh-priority"
+You can test the behavior by deploying two pods with the "myhigh-priority".
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -237,6 +247,8 @@ spec:
       priorityClassName: myhigh-priority
 ```
 
+If you check both deployments, you will notice, that Kubernetes has **killed** some of the pods with *low priority* to be able to schedule pods with the **higher priority**!
+
 #### House-Keeping ####
 
 Delete the deployments and priority classes.
@@ -249,16 +261,20 @@ $ kubectl delete -f .\priority-classes.yaml
 
 ## Resource Requests / Limits ##
 
-When it comes to deploying pods to your cluster, you can give Kubernetes some hints about the amount of resources (CPU / memory) your workload will need. As discussed above, these requests will be taken care of in the scheduling algorithm. So basically, you help the cluster deciding, if pods can still be created or not (or if e.g. the cluster autoscaler has to create new nodes to be able to fulfill your request).
+When it comes to deploying pods to your cluster, you can give Kubernetes some hints about the amount of resources (CPU / memory) your workload will need. As discussed in the *scheduling* chapter above, these requests will be taken care of in the scheduling algorithm. So basically, you help the cluster deciding, if pods can still be created or not (or if e.g. the cluster autoscaler has to create new nodes to be able to fulfill your request).
 
-### Types ###
+### Resource Types ###
 
 There are two types of resources, you can set requests and limits for:
 
 - CPU
 - Memory
 
+Now, let's try setting resource limits and experiment with them by scheduling some pods that consume a lot of resources.
+
 #### Set Defaults on Namespace ####
+
+We set the limits/request on the namespace level. You can also define them when specifying the pod.
 
 ##### CPU Limit #####
 
@@ -292,7 +308,9 @@ spec:
     type: Container
 ```
 
-##### Test the Limits #####
+#### Test the Resource Limits ####
+
+First, we deploy a pod that wants to consume 2vCPU of our cluster.
 
 ```yaml
 apiVersion: v1
@@ -319,6 +337,8 @@ As you can see e.g. in the Kubernetes Dashboard, CPU usage will be limited to th
 ![CPU Limits](/img/cpu-limit.png)
 
 #### Stress Memory ####
+
+Next, we are going to test, how Kubernetes handles pods that want to consume more memory than they are allowed to.
 
 ```yaml
 apiVersion: v1
@@ -349,9 +369,20 @@ Check the pod status by the following command:
 $ kubectl describe po/memory-demo
 ```
 
-You should see similar results as shown here:
+You can see, that the pods has been automatically killed by Kubernetes and should have similar results as shown here:
 
 ![Memory Limits](/img/mem-limit.png)
+
+#### House-Keeping ####
+
+Delete the limits and pods.
+
+```shell
+$ kubectl delete -f ns-cpu-limit.yaml 
+$ kubectl delete -f ns-mem-limit.yaml 
+$ kubectl delete -f stress-cpu.yaml 
+$ kubectl delete -f stress-mem.yaml 
+```
 
 ## Horizontal Scaling ?? ##
 
