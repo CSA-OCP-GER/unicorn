@@ -133,6 +133,20 @@ spec:
         image: redis
 ```
 
+Query the pods a show the node each pod is running on:
+
+```shell
+$ kubectl get po -o wide
+```
+
+#### House-Keeping ####
+
+Remove the Redis cluster.
+
+```shell
+$ kubectl delete -f .\pod-anti-affinity.yaml
+```
+
 ### Pod Priority ### 
 
 **Priority** indicates the importance of a pod relative to other pods. A pod priority influences the scheduling of a pod and out-of-resource eviction ordering on the node - bottom line: by `PriorityClass`, you can define how important a pod is for your application - and Kubernetes will respect your settings.
@@ -233,9 +247,111 @@ $ kubectl delete -f .\highprio-pods.yaml
 $ kubectl delete -f .\priority-classes.yaml
 ```
 
-## Resource Limits ##
+## Resource Requests / Limits ##
 
 When it comes to deploying pods to your cluster, you can give Kubernetes some hints about the amount of resources (CPU / memory) your workload will need. As discussed above, these requests will be taken care of in the scheduling algorithm. So basically, you help the cluster deciding, if pods can still be created or not (or if e.g. the cluster autoscaler has to create new nodes to be able to fulfill your request).
+
+### Types ###
+
+There are two types of resources, you can set requests and limits for:
+
+- CPU
+- Memory
+
+#### Set Defaults on Namespace ####
+
+##### CPU Limit #####
+
+```yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-limit-range
+spec:
+  limits:
+  - default:
+      cpu: "1"
+    defaultRequest:
+      cpu: "0.5"
+    type: Container
+```
+
+##### Memory Limit #####
+
+```yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mem-limit-range
+spec:
+  limits:
+  - default:
+      memory: 200Mi
+    defaultRequest:
+      memory: 100Mi
+    type: Container
+```
+
+##### Test the Limits #####
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cpu-demo
+spec:
+  containers:
+  - name: cpu-demo-ctr
+    image: vish/stress
+    # You can also define limits and requests on Pod level
+    # resources:
+    #   limits:
+    #     cpu: "1"
+    #   requests:
+    #     cpu: "0.5"
+    args:
+    - -cpus
+    - "2"
+```
+
+As you can see e.g. in the Kubernetes Dashboard, CPU usage will be limited to the amount we set in the resource limits of the namespace.
+
+![CPU Limits](/img/cpu-limit.png)
+
+#### Stress Memory ####
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-demo
+spec:
+  containers:
+    - image: vish/stress
+      imagePullPolicy: Always
+      name: memory-demo-ctr
+      args:
+        - -cpus
+        - "1"
+        - -mem-total
+        - "600Mi"
+        - -mem-alloc-size
+        - "10Mi"
+        - -mem-alloc-sleep
+        - "6s"
+```
+
+This pod will allocate 10MB of memory (up to 600MB) each 6s. Because we set a limit of 200MB on the namespace, the pod will be killed and restarted after about 2 minutes.
+
+Check the pod status by the following command:
+
+```shell
+$ kubectl describe po/memory-demo
+```
+
+You should see similar results as shown here:
+
+![Memory Limits](/img/mem-limit.png)
 
 ## Horizontal Scaling ?? ##
 

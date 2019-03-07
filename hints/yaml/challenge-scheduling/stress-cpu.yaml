@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cpu-demo
+spec:
+  containers:
+    - name: cpu-demo-ctr
+      image: vish/stress
+      # You can also define limits and requests on Pod level
+      # resources:
+      #   limits:
+      #     cpu: "1"
+      #   requests:
+      #     cpu: "0.5"
+      args:
+        - -cpus
+        - "2"
