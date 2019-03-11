@@ -2,14 +2,28 @@
 
 ## Here is what you will learn ##
 
-- ...
-- ...
+- learn about the differnet isolation approaches
+- apply NetworkPolicy definitions to isolate workloads on one Kubernetes cluster
 
 ## Tenant / Team / Environment Isolation ##
 
-### Isolation Strategies ###
+When it comes to isolating workloads with Kubernetes, there are two "high-level" approaches:
 
-... Physical / Logical Isolation ...
+- physical isolation
+
+![Isolation1](/img/physical_isolation.png)
+
+- logical isolation
+
+![Isolation1](/img/logical_isolation.png)
+
+**Physical isolation** is achieved by creating / running separate clusters for differnet teams or clients. That means every party has its own cluster and is fully isolated in terms of virtual machines / network etc.
+
+**Logical isolation** means that you run one Kubernetes cluster and implement the "boundries" by adding and enforcing network policies.
+
+![Namespace vs. Physical Isolation](/img/npm_log_phys_isolation.png)
+
+In this chapter, you will learn how to work with the `NetworkPolicy` object in Kubernetes.
 
 ## Setup New Cluster with Azure CNI / Advanced Networking ##
 
@@ -21,6 +35,8 @@ Advantages when using "Advanced Networking":
 - You can create user defined routes (UDRs) to route traffic from pods to virtual network devices.
 
 ### Install Azure Network Policy Manager (NPM) ###
+
+For network policies to be work, you need a special plugin that takes care of enforcing such policies. The **Azure Network Policy Manager** is such a plugin that is written with *Azure networking* in mind.
 
 ```shell
 $ kubectl apply -f https://raw.githubusercontent.com/Azure/acs-engine/master/parts/k8s/addons/kubernetesmasteraddons-azure-npm-daemonset.yaml
@@ -127,13 +143,9 @@ Namespace isolation aka. "logical isolation" pattern is very common when you wan
 
 ![Namespace Isolation](/img/npm_logical_isolation.png)
 
-> There is - of course - also the concept of "physical isolation", where you create single clusters for your clients. This means on the one side, you have a higher degree of security (small "attack surface", network isolation, "blast radius" etc.), but on the other side a more complex landscape for you application. The following chart shows the differences between the two approaches.
-
-![Namespace vs. Physical Isolation](/img/npm_log_phys_isolation.png)
-
 #### Deploy Sample Application ####
 
-To demonstrate access limitation to the current namespace, let's create two new namespaces.
+To demonstrate access limitation to namespaces, let's create two new namespaces.
 
 ```shell
 $ kubectl create ns teama
@@ -151,7 +163,7 @@ $ kubectl run web-teama --image=nginx --labels=app=web-teama --expose --port 80 
 
 #### Setup Network Policies ####
 
-Now, create the corresponding network policy that denies all incoming network traffic from other namespaces than "teama"
+Now, create the corresponding network policy that denies all incoming network traffic from other namespaces than "teama".
 
 ```yaml
 kind: NetworkPolicy
