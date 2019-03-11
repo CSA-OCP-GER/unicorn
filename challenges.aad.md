@@ -52,7 +52,7 @@ Open a shell and create an AKS cluster via Azure CLI.
   --aad-tenant-id TENANT_ID
 ```
 
-> This will take about 10-15 min. to complete
+> This will take a few minutes to complete
 
 After the cluster has been created, download the admin credentials to initially assign cluster roles to the AAD group.
 
