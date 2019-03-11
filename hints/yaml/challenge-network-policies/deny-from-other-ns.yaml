@@ -1,0 +1,11 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: teama
+  name: deny-from-other-ns
+spec:
+  podSelector:
+    matchLabels:
+  ingress:
+    - from:
+        - podSelector: {}
