@@ -13,7 +13,7 @@ Welcome to **Project Unicorn** - a hands on workshop to widen your skills within
 1. [Challenge 5](challenges.appgtw.md) - Create a Kubernetes cluster behind an Azure Application Gateway with a Web Firewall
 1. [Challenge 6](challenges.aadpodidentity.md) - Learn about Managed Service Identity / Managed Pod Identity 
 1. [Challenge 7](challenges.sidecar.md) - Get familiar with the sidecar pattern
-1. [Challenge 8](challenges.istio.0.md) - Service Mesh FTW! Learn about Istio and the various features of it.
+1. [Challenge 8](challenges.istio.0.sm.md) - Service Mesh FTW! Learn about Istio and the various features of it.
 
 ## How to start ##
 
