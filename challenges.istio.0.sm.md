@@ -37,7 +37,7 @@ Istio version >= 1.0.0 and Kubernetes >= 1.10.6.
 1. [How to test new service versions with request mirroring](challenges.istio.7.sm-requestmirroring.md) :star:
 1. [How to handle external service calls / Egress](challenges.istio.8.sm-egress.md)
 
-:star: = highly recommended :smile:
+:star: = highly recommended
 
 ## How Istio works ##
 
