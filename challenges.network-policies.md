@@ -217,4 +217,4 @@ $ kubectl delete service/nginx
 $ kubectl delete deployment/nginx
 ```
 
-> DON'T FORGET :point_up: If you don't need the current Kubernetes cluster anymore, delete it :smile:
+> DON'T FORGET :point_up: If you don't need the current Kubernetes cluster anymore, delete it.
