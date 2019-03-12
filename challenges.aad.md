@@ -11,6 +11,9 @@
   - get admin credentials for the cluster
   - login with an AAD user
 
+![AAD Integration](/img/aad_k8s.png)
+*AAD Login Flow*
+
 ## Create AAD applications for the Kubernetes cluster and the client ##
 
 > ***Optional:*** If you don't want to use your organization's AAD, create a new tenant for testing purposes and afterwards switch to that directory: <https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant#create-a-new-azure-ad-tenant>
@@ -49,7 +52,7 @@ Open a shell and create an AKS cluster via Azure CLI.
   --aad-tenant-id TENANT_ID
 ```
 
-> This will take about 10-15 min. to complete
+> This will take a few minutes to complete
 
 After the cluster has been created, download the admin credentials to initially assign cluster roles to the AAD group.
 
