@@ -33,7 +33,41 @@ An `ingress` is a core concept of Kubernetes, but is always implemented by a thi
 
 ## Deploy Ingress Controller ##
 
-## Deploy Sample Application ##
+To demonstrate the features of an ingress controller, we create a new namespace where our sample applications will be deployed to.
+
+```shell
+$ kubectl create ns ingress-samples
+```
+
+Now, let's start by deploying the NGINX ingress controller to our cluster! The most convienient way is to use a preconfigured [Helm chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress).
+
+```shell
+helm install stable/nginx-ingress --name clstr-ingress --set rbac.create=true,controller.scope.enabled=true,controller.scope.namespace=ingress-samples --namespace ingress-samples
+```
+
+> **Info:** we limit the scope of our ingress controller to a certain namespace (*ingress-samples*). In production environments, it is a good practices to not share an ingress controller for multiple environments. NGINX configuration quickly grows up to thousands of lines and suddenly starts to have config reload issues! Therefore, try to keep things clean, give each environment its own controller and avoid such problems from the beginning.
+
+## Deploy Sample Applications ##
+
+```shell
+$ helm repo add azure-samples https://azure-samples.github.io/helm-charts/
+
+$ helm install azure-samples/azure-vote --set title="Winter Is Coming?" --set value1="Jon and Daenerys say YES" --set value2="Cersei says NO" --set serviceName=got-vote --set serviceType=ClusterIP --set serviceNameFront=got-vote-front --name got-vote --namespace ingress-samples
+```
+
+![GOT Voting](/img/ingress_got_vote.png)
+
+*GOT Voting App*
+
+```shell
+$ helm install azure-samples/azure-vote --set title="Is the Hawkins National Laboratory a safe place?" --set value1="Will Byers says no" --set value2="Eleven says NOOOOOOO!!" --set serviceName=stranger-things-vote --set serviceType=ClusterIP --set serviceNameFront=stranger-things-vote-front --name stranger-things-vote --namespace ingress-samples
+```
+
+![Stranger Things Voting](/img/ingress_st_vote.png)
+
+*Stranger Things Voting App*
+
+We deploy both applications with a frontend service of type `ClusterIP`, because we are going to deploy `ingress` resources for each voting app and skip creating public IP addresses for each frontend service.
 
 ## Create Ingress ##
 
