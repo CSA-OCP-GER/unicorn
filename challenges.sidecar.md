@@ -18,7 +18,7 @@ The following diagram illustrates the scenario:
 
 ## Deploy the Demo Application to your cluster
 
-Open a shell and navigate to the [Demo API project](src/sidecar/src/DemoApi) and build the docker image.
+Open a shell and navigate to the [Demo API project](apps/aspnetcore-sidecar/DemoApi) and build the docker image.
 
 ```Shell
 docker build -t sidecardemoapi:1.0 .
@@ -30,7 +30,7 @@ Now tag your image to push it to Azure container registry later.
 docker tag sidecardemoapi:1.0 <your acr name>.azurecr.io/sidecardemoapi:1.0
 ```
 
-Navigate to the [SidcarProxy project](/src/sidecar/src/SidecarProxy) and build the docker image.
+Navigate to the [SidcarProxy project](apps/aspnetcore-sidecar/SidecarProxy) and build the docker image.
 
 ```
 docker build -t sidecarproxy:1.0 .
@@ -59,7 +59,7 @@ docker push <your acr name>.azurecr.io/sidecarproxy:1.0
 
 ## Deploy the application
 
-Open the [deployment file](src/sidecar/deployment/deployment.yaml) and replace the Azure container registry name and image secret.
+Open the [deployment file](hints/yaml/challenge-sidecar/deployment.yaml) and replace the Azure container registry name and image secret.
 
 ```
 kubectl apply -f .\deployment.yaml
