@@ -105,7 +105,7 @@ Do not change the name of the secrets!
 
 ## Install Identity on your AKS Cluster ##
 
-Edit and save the file [aadpodidentity.yaml](/src/aadpodidentity/deployment/aadpodidentity.yaml).
+Edit and save the file [aadpodidentity.yaml](hints/yaml/challenge-aadpodidentity/aadpodidentity.yaml).
 Replace clientid and manage-didentity-resourcename.
 
 ```YAML
@@ -125,7 +125,7 @@ kubectl create -f aadpodidentity.yaml
 
 ## Install Pod to Identity binding ##
 
-Edit and save the file [aadpodidentitybinding.yaml](/src/aadpodidentity/deployment/aadpodidentitybinding.yaml)
+Edit and save the file [aadpodidentitybinding.yaml](hints/yaml/challenge-aadpodidentity/aadpodidentitybinding.yaml)
 
 ```YAML
 apiVersion: "aadpodidentity.k8s.io/v1"
@@ -150,7 +150,7 @@ labels:
 
 ## Install demo application ##
 
-There is already a demo application implemented in ASP.NET Core to demo the usage of AAD Pod Identity. The application is a simple REST API that loads its settings from the above created Azure key vault. You can find the application [here](src/aadpodidentity/src/AadPodIdentityDemoApi).
+There is already a demo application implemented in ASP.NET Core to demo the usage of AAD Pod Identity. The application is a simple REST API that loads its settings from the above created Azure key vault. You can find the application [here](apps/aspnetcore-aadpodidentity/AadPodIdentityDemoApi).
 The application uses the [Options Pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-2.2) to load application settings into a simple object.
 
 ```C#
@@ -161,13 +161,13 @@ public class SettingsOptions
 }
 ```
 
-The binding from the settings to the SettingsObject is configures in [Startup.cs](src/aadpodidentity/src/AadPodIdentityDemoApi/Startup.cs).
+The binding from the settings to the SettingsObject is configures in [Startup.cs](apps/aspnetcore-aadpodidentity/AadPodIdentityDemoApi/Startup.cs).
 
 ```C#
 services.Configure<SettingsOptions>(options => Configuration.Bind("Settings", options));
 ```
 
-To load settings from an Azure key vault, ASP.NET Core must be configured in [Program.cs](src/aadpodidentity/src/AAdPodIdentityDemoApi/Program.cs)
+To load settings from an Azure key vault, ASP.NET Core must be configured in [Program.cs](apps/aspnetcore-aadpodidentity/AAdPodIdentityDemoApi/Program.cs)
 
 ```C#
 public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
@@ -185,7 +185,7 @@ public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
 
 You can see that a special component named AzureServiceTokenProvider is used. This component is responsible to acquire a token on behalf of your user-assigned identity to access the Azure key vault.
 
-Now its time to build the docker image for the demo application. Open a shell and go to the directory where the [dockerfile](src/aadpodidentity/src/AadPodIdentityDemoApi/dockerfile) is located and run the following command to create the image.
+Now its time to build the docker image for the demo application. Open a shell and go to the directory where the [dockerfile](apps/aspnetcore-aadpodidentity/AadPodIdentityDemoApi/dockerfile) is located and run the following command to create the image.
 
 ```Shell
 docker build -t aadpodidentitydemoapi:1.0 .
@@ -210,7 +210,7 @@ docker push <your registry name>.azurecr.io/aadpodidentitydemoapi:1.0
 ```
 
 Deploy the Demo Application.
-Open the [deployment yaml-file](src/aadpodidentity/deployment/demoapi.yaml) and replace the value of the environment variable ```KeyVault__BaseUrl``` with the url of your key vault and specify the secret to access your Azure container registry.
+Open the [deployment yaml-file](hints/yaml/challenge-aadpodidentity/demoapi.yaml) and replace the value of the environment variable ```KeyVault__BaseUrl``` with the url of your key vault and specify the secret to access your Azure container registry.
 
 ```yaml
 apiVersion: extensions/v1beta1
