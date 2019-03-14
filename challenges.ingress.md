@@ -384,6 +384,60 @@ spec:
     application: oauth2-proxy
 ```
 
+Deploy a sample application that should be protected.
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web-deploy
+  labels:
+    application: web
+    tier: frontend
+  namespace: ingress-samples
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      application: web
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        application: web
+        tier: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: csaocpger/headertester:1.0
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: headers-svc
+  labels:
+    application: web
+    tier: frontend
+  namespace: ingress-samples
+spec:
+  selector:
+    application: web
+    tier: frontend
+  ports:
+    - port: 80
+      targetPort: 3000
+
+```
+
 Create ingress
 
 ```yaml
@@ -395,9 +449,10 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
   name: oauth2-ingress
+  namespace: ingress-samples
 spec:
   rules:
-    - host: got.<YOUR_CUSTOM_DNS_NAME>
+    - host: <SUBDOMAIN.YOUR_DOMAIN>
       http:
         paths:
           - path: /oauth2
@@ -406,13 +461,14 @@ spec:
               servicePort: 4180
   tls:
     - hosts:
-      - <DOMAIN>
+        - <SUBDOMAIN.YOUR_DOMAIN>
       secretName: tls-secret
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: got-ing
+  name: headers-ing
+  namespace: ingress-samples
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -423,14 +479,15 @@ metadata:
 spec:
   tls:
     - hosts:
-      - <DOMAIN>
+        - <SUBDOMAIN.YOUR_DOMAIN>
       secretName: tls-secret
   rules:
-  - host: <DOMAIN>
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: web-svc
-          servicePort: 80
+    - host: <SUBDOMAIN.YOUR_DOMAIN>
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: headers-svc
+              servicePort: 80
+
 ```
