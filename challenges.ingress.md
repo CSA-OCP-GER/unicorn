@@ -230,7 +230,43 @@ Again, check your browser! Hopefully, you will be prompted to enter a username a
 
 ## External Authentication / Azure Active Directory / Cert-Manager / Let's Encrypt Certificate ##
 
-Install Cert-Manager
+In this section, we are going to enable authentication via Azure Active Directory. Therefore, we first need to register an application in our directory that represents the actual application.
+
+Follow these steps:
+
+Go to the portal and under "Azure Active Directory", click on "App Registrations (Preview)"
+
+![App Registrations](/img/ingress-app-reg1.png)
+
+Then register a new app.
+
+![App Registrations](/img/ingress-app-reg2.png)
+
+In the "Redirect" section, enter the following URL (we will need that later):
+
+*https://<subdomain.domain>/oauth2/callback*
+
+Click on "Register".
+
+When the application has been registered, go to the "Authentication" section and enable the "Implicit Flow" as follows:
+
+![App Registrations](/img/ingress-app-reg3.png)
+
+Next, create a client secret (we will also need that later):
+
+![App Registrations](/img/ingress-app-reg4.png)
+
+Copy the secret for later use.
+
+To be able to reach our application via https/SSL, we will leverage the "Let's Encrypt" service, that will give us free SSL certificates for our site.
+
+There is a very convienient way to create certifictes "on the fly" for our ingress definitions. Jetstack has created a Kubernetes addon called "Certmanager", that will automatically provision and manage TLS certificates in Kubernetes (Docs: https://docs.cert-manager.io/en/latest/). It will ensure certificates are valid and up to date periodically, and attempt to renew certificates at an appropriate time before expiration.
+
+So, let's install that addon in our Kubernetes cluster.
+
+### Install Cert-Manager ###
+
+We will use Helm to install the cert-manager.
 
 ```shell
 $ helm install stable/cert-manager --name cert-manager \
@@ -238,7 +274,10 @@ $ helm install stable/cert-manager --name cert-manager \
   --set ingressShim.defaultIssuerKind=ClusterIssuer --namespace ingress-samples
 ```
 
-Certificate Issuer
+### Certificate Issuer ###
+
+Register a certificate issuer for our cluster.
+
 ```yaml
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: ClusterIssuer
@@ -254,7 +293,7 @@ spec:
     http01: {}
 ```
 
-Cluster Certificate
+### Create Domain Certificate ###
 
 ```yaml
 apiVersion: certmanager.k8s.io/v1alpha1
@@ -276,6 +315,17 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
 ```
+
+Now that we are set to create certificates for our ingress definitions, let's install the authorization proxy that will take care of loggin us in and check, if a user has a valid session, before directing traffic to our services.
+
+There is a project called "Oauth-Proxy2" maintained by bitly that does exactly what we want to achieve.
+
+You will need to adjust the following parameters:
+
+- TENANT_ID - your Azure tenant ID
+- APPLICATION_ID - the ID of the application you created in AAD
+- APPLICATION_KEY - the client secret you created for the AAD application
+- BASE64_ENCODED_CUSTOM_SECRET - create a secret like "mysecret123!" and encode it as a base64 string
 
 ```yaml
 apiVersion: extensions/v1beta1
