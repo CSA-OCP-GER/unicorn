@@ -35,7 +35,7 @@ Get the ObjectId of your created ServicePrincipal and remember it.
 
 ## Cluster Deployment with Azure resource group deployment ##
 
-To deploy the Cluster on Azure use the following [ARM Template](src/applicationgateway/deployment/akscluster.json).
+To deploy the Cluster on Azure use the following [ARM Template](hints/yaml/challenge-applicationgateway/akscluster.json).
 Open a shell and go to the directory where the ARM Template is located. 
 
 ```Shell

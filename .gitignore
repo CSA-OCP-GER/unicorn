@@ -63,12 +63,20 @@ typings/
 .vscode/tasks.json
 hints/yaml/challengeistio/poolejector/test.json
 
-src/aadpodidentity/src/.vs/
-src/aadpodidentity/src/AadPodIdentityDemoApi/Properties/
-src/aadpodidentity/src/AadPodIdentityDemoApi/bin/
-src/aadpodidentity/src/AadPodIdentityDemoApi/obj/
+apps/aspnetcore-aadpodidentity/.vs/
+apps/aspnetcore-aadpodidentity/AadPodIdentityDemoApi/AadPodIdentityDemoApi.csproj.user
+apps/aspnetcore-aadpodidentity/AadPodIdentityDemoApi/Properties/
+apps/aspnetcore-aadpodidentity/AadPodIdentityDemoApi/bin/
+apps/aspnetcore-aadpodidentity/AadPodIdentityDemoApi/obj/
 
 apps/netcore-calc-backend/obj/**
 apps/netcore-calc-backend/bin/**
 .DS_Store
 hints/yaml/challange-ingress/auth
+apps/aspnetcore-sidecar/src/.vs
+apps/aspnetcore-sidecar/DemoApi/bin/
+apps/aspnetcore-sidecar/DemoApi/obj
+apps/aspnetcore-sidecar/DemoApi/DemoApi.csproj.user
+apps/aspnetcore-sidecar/SidecarProxy/bin/
+apps/aspnetcore-sidecar/SidecarProxy/obj
+apps/aspnetcore-sidecar/SidecarProxy/SidecarProxy.csproj.user
