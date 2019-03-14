@@ -71,3 +71,4 @@ src/aadpodidentity/src/AadPodIdentityDemoApi/obj/
 apps/netcore-calc-backend/obj/**
 apps/netcore-calc-backend/bin/**
 .DS_Store
+hints/yaml/challange-ingress/auth

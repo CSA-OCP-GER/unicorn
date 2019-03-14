@@ -8,7 +8,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/auth-secret: basic-auth
-    nginx.ingress.kubernetes.io/auth-realm: "The Demogorgon says: Authentication Required"
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
 spec:
   rules:
     - host: stranger-things.project-unicorn.ddnss.de

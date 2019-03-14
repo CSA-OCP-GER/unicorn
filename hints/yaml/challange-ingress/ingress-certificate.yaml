@@ -1,0 +1,18 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: domain-cert
+  namespace: ingress-samples
+spec:
+  secretName: tls-secret
+  dnsNames:
+    - project-unicorn.ddnss.de
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        domains:
+          - project-unicorn.ddnss.de
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

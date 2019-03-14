@@ -153,6 +153,10 @@ Visit the site with your browser and again with your mobile device (preferrably 
 
 ## Rate Limiting ##
 
+**Rate Limiting** is used to control the amount of traffic a client create for your services. You can add annotations to your ingress definitions to influence the behavior of NGINX.
+
+In this sample, we rate-limit one of our services with the value of "10 requests per minute". Other definitions can be found here: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#rate-limiting 
+
 ```yaml
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -174,24 +178,30 @@ spec:
               servicePort: 80
 ```
 
-> You can "whitelist" certain IP addresses/address ranges that will be excluded for this setting via `nginx.ingress.kubernetes.io/limit-whitelist` annotation.
+> You can also "whitelist" certain IP addresses/address ranges that will be excluded for this setting via `nginx.ingress.kubernetes.io/limit-whitelist` annotation.
+
+Try to load the service a few times in your browser and see how the ingress controller limits your requests.
 
 ## Basic Authentication ##
 
-Create a `.htpasswd` file: http://www.htaccesstools.com/htpasswd-generator/ or via 
+Create a `auth` file: http://www.htaccesstools.com/htpasswd-generator/ or via 
 
 ```shell
-$ htpasswd -c ./.htpasswd user1
+$ htpasswd -c ./auth user1
 (You will be promted to enter a password)
 
-$ htpasswd ./.htpasswd user2
+$ htpasswd ./auth user2
 ```
 
-Add the file as `secret`:
+> **INFO:** It is important, that you name you file `auth`!
+
+Add the file as Kubernetes `secret`:
 
 ```shell
-$ kubectl create secret generic basic-auth --from-file=.htpasswd -n ingress-samples
+$ kubectl create secret generic basic-auth --from-file=auth -n ingress-samples
 ```
+
+Now add the corresponding annotains that pick-up the `auth` file and enforce basic authentication on our ingress:
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -216,6 +226,161 @@ spec:
               servicePort: 80
 ```
 
-## External Authentication / Azure Active Directory ##
+Again, check your browser! Hopefully, you will be prompted to enter a username and password! :smile:
 
-## DNS / Cert-Manager / Let's Encrypt Certificate ##
+## External Authentication / Azure Active Directory / Cert-Manager / Let's Encrypt Certificate ##
+
+Install Cert-Manager
+
+```shell
+$ helm install stable/cert-manager --name cert-manager \
+  --set ingressShim.defaultIssuerName=letsencrypt-prod \
+  --set ingressShim.defaultIssuerKind=ClusterIssuer --namespace ingress-samples
+```
+
+Certificate Issuer
+```yaml
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  namespace: ingress-samples
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: <EMAIL>
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    http01: {}
+```
+
+Cluster Certificate
+
+```yaml
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: domain-cert
+  namespace: ingress-samples
+spec:
+  secretName: tls-secret
+  dnsNames:
+  - <DOMAIN>
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - <DOMAIN>
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+```
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    application: oauth2-proxy
+  name: oauth2-proxy-deployment
+  namespace: ingress-samples
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: oauth2-proxy
+  template:
+    metadata:
+      labels:
+        application: oauth2-proxy
+    spec:
+      containers:
+      - args:
+        - --provider=azure
+        - --azure-tenant=TENANT_ID
+        - --pass-access-token=true
+        - --cookie-name=_mycookie
+        - --email-domain=*
+        - --upstream=file:///dev/null
+        - --http-address=0.0.0.0:4180
+        name: oauth2-proxy
+        image: a5huynh/oauth2_proxy:2.2
+        env:
+        - name: OAUTH2_PROXY_CLIENT_ID
+          value: APPLICATION_ID
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          value: APPLICATION_KEY
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          value: BASE64_ENCODED_CUSTOM_SECRET
+        ports:
+        - containerPort: 4180
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    application: oauth2-proxy
+  name: oauth2-proxy-svc
+  namespace: ingress-samples
+spec:
+  ports:
+  - name: http
+    port: 4180
+    protocol: TCP
+    targetPort: 4180
+  selector:
+    application: oauth2-proxy
+```
+
+Create ingress
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+  name: oauth2-ingress
+spec:
+  rules:
+    - host: got.<YOUR_CUSTOM_DNS_NAME>
+      http:
+        paths:
+          - path: /oauth2
+            backend:
+              serviceName: oauth2-proxy-svc
+              servicePort: 4180
+  tls:
+    - hosts:
+      - <DOMAIN>
+      secretName: tls-secret
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: got-ing
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$request_uri"
+spec:
+  tls:
+    - hosts:
+      - <DOMAIN>
+      secretName: tls-secret
+  rules:
+  - host: <DOMAIN>
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: web-svc
+          servicePort: 80
+```
