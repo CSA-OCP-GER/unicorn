@@ -40,6 +40,13 @@
           "description": "Containers DNS server IP address."
         }
       },
+      "aksInternalLoadBalancerIp": {
+        "defaultValue": "15.0.255.1",
+        "type": "string",
+        "metadata": {
+          "description": "IP address for internal load balancer."
+        }
+      },
       "applicationGatewaySubnetAddressPrefix": {
         "defaultValue": "15.1.0.0/16",
         "type": "string",
@@ -415,7 +422,7 @@
                   "properties": {
                     "backendAddresses": [
                         {
-                            "ipAddress": "16.0.255.1"
+                            "ipAddress": "[parameters('aksInternalLoadBalancerIp')]"
                         }
                     ]
                   }

@@ -17,6 +17,9 @@
       "applicationGatewaySubnetAddressPrefix": {
           "value": "16.1.0.0/16"
       },
+      "aksInternalLoadBalancerIp" : {
+        "value": "16.0.255.1"
+      },
       "aksServicePrincipalAppId": {
         "value": ""
       },

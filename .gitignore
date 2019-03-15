@@ -72,7 +72,7 @@ apps/aspnetcore-aadpodidentity/AadPodIdentityDemoApi/obj/
 apps/netcore-calc-backend/obj/**
 apps/netcore-calc-backend/bin/**
 .DS_Store
-apps/aspnetcore-sidecar/src/.vs
+apps/aspnetcore-sidecar/.vs/
 apps/aspnetcore-sidecar/DemoApi/bin/
 apps/aspnetcore-sidecar/DemoApi/obj
 apps/aspnetcore-sidecar/DemoApi/DemoApi.csproj.user
