@@ -4,11 +4,10 @@
 
 - Deploy an ingress controller
 - Define ingress rules
-- Learn how to integrate Let's Encrypt certs
 - IP Whitelisting to limit access to certain applications
 - Achieve rate limiting with an ingress controller
 - Enable Basic Auth
-- Delegate Authentication to Azure Active Directory
+- Delegate Authentication to Azure Active Directory and learn how to integrate Let's Encrypt
 
 ## Kubernetes Ingress Controller ##
 
