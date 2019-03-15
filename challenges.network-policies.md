@@ -24,6 +24,7 @@ When it comes to isolating workloads with Kubernetes, there are two "high-level"
 **Logical isolation** means that you run one Kubernetes cluster and implement the "boundries" by adding and enforcing network policies.
 
 ![Namespace vs. Physical Isolation](/img/npm_log_phys_isolation.png)
+*Isolation Strategies - comparison*
 
 In this chapter, you will learn how to work with the `NetworkPolicy` object in Kubernetes.
 
