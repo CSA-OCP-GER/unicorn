@@ -1,5 +1,7 @@
 # Implement Network Policies #
 
+> Need help in this challenge? Check deployment files [here :blue_book:](hints/yaml/challenge-network-policies)!
+
 ## Here is what you will learn ##
 
 - learn about the differnet isolation approaches

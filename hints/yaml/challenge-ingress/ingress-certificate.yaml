@@ -6,13 +6,13 @@ metadata:
 spec:
   secretName: tls-secret
   dnsNames:
-    - project-unicorn.ddnss.de
+    - <DOMAIN>
   acme:
     config:
       - http01:
           ingressClass: nginx
         domains:
-          - project-unicorn.ddnss.de
+          - <DOMAIN>
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer

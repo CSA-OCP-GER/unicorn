@@ -1,5 +1,7 @@
 # Advanced Ingress #
 
+> Need help in this challenge? Check deployment files [here :blue_book:](hints/yaml/challenge-ingress)!
+
 ## Here is what you will learn ##
 
 - Deploy an ingress controller

@@ -1,18 +1,17 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: stranger-things-ing
+  name: got-ing
   namespace: ingress-samples
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/whitelist-source-range: "46.5.253.212"
 spec:
   rules:
-    - host: stranger-things.project-unicorn.ddnss.de
+    - host: got.<DOMAIN>
       http:
         paths:
           - path: /
             backend:
-              serviceName: stranger-things-vote-front
+              serviceName: got-vote-front
               servicePort: 80

@@ -1,5 +1,7 @@
 # Service Mesh with Istio #
 
+> Need help in this challenge? Check deployment files [here :blue_book:](hints/yaml/challenge-istio)!
+
 ![Istio Service Mesh](/img/istio.png)
 
 In this challenge you will install a service mesh in your Azure AKS cluster and implement most of the features Istio provides.

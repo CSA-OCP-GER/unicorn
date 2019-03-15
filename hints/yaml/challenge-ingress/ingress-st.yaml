@@ -6,10 +6,9 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/limit-rpm: "10"
 spec:
   rules:
-    - host: stranger-things.project-unicorn.ddnss.de
+    - host: stranger-things.<DOMAIN>
       http:
         paths:
           - path: /
