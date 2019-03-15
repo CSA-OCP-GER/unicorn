@@ -248,11 +248,7 @@ In the "Redirect" section, enter the following URL (we will need that later):
 
 Click on "Register".
 
-When the application has been registered, go to the "Authentication" section and enable the "Implicit Flow" as follows:
-
-![App Registrations](/img/ingress-app-reg3.png)
-
-Next, create a client secret (we will also need that later):
+When the application has been registered, create a client secret (we will also need that later):
 
 ![App Registrations](/img/ingress-app-reg4.png)
 
@@ -274,9 +270,11 @@ $ helm install stable/cert-manager --name cert-manager \
   --set ingressShim.defaultIssuerKind=ClusterIssuer --namespace ingress-samples
 ```
 
+Now that cert-manager is installed, we need to add a few Kubernetes definitions to our cluster, to be able to request SSL certificates from *Let's Encrypt*.
+
 ### Certificate Issuer ###
 
-Register a certificate issuer for our cluster.
+Register a certificate issuer for our cluster. Replace `<EMAIL>` with your email address.
 
 ```yaml
 apiVersion: certmanager.k8s.io/v1alpha1
@@ -294,6 +292,8 @@ spec:
 ```
 
 ### Create Domain Certificate ###
+
+Register a certificate for your domain. Replace `<DOMAIN>` with the domain, you registered at the DNS service, e.g. *project-unicorn.ddnss.de*.
 
 ```yaml
 apiVersion: certmanager.k8s.io/v1alpha1
@@ -316,16 +316,16 @@ spec:
     kind: ClusterIssuer
 ```
 
-Now that we are set to create certificates for our ingress definitions, let's install the authorization proxy that will take care of loggin us in and check, if a user has a valid session, before directing traffic to our services.
+Now that we are set to create certificates for our ingress definitions, let's install the authorization proxy that will take care of login us in and check, if a user has a valid session, before directing traffic to our services.
 
-There is a project called "Oauth-Proxy2" maintained by bitly that does exactly what we want to achieve.
+There is a project called "Oauth-Proxy2" (just one of many out there) that does exactly what we want to achieve.
 
 You will need to adjust the following parameters:
 
-- TENANT_ID - your Azure tenant ID
-- APPLICATION_ID - the ID of the application you created in AAD
-- APPLICATION_KEY - the client secret you created for the AAD application
-- BASE64_ENCODED_CUSTOM_SECRET - create a secret like "mysecret123!" and encode it as a base64 string
+- `<TENANT_ID>` - your Azure tenant ID
+- `<APPLICATION_ID>` - the ID of the application you created in AAD
+- `<APPLICATION_KEY>` - the client secret you created for the AAD application
+- `<BASE64_ENCODED_CUSTOM_SECRET>` - create a secret like "mysecret123!" and encode it as a base64 string. (`echo  'mysecret123!' | base64` or at https://www.base64encode.org/)
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -348,7 +348,7 @@ spec:
       containers:
       - args:
         - --provider=azure
-        - --azure-tenant=TENANT_ID
+        - --azure-tenant=<TENANT_ID>
         - --pass-access-token=true
         - --cookie-name=_mycookie
         - --email-domain=*
@@ -358,11 +358,11 @@ spec:
         image: a5huynh/oauth2_proxy:2.2
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
-          value: APPLICATION_ID
+          value: <APPLICATION_ID>
         - name: OAUTH2_PROXY_CLIENT_SECRET
-          value: APPLICATION_KEY
+          value: <APPLICATION_KEY>
         - name: OAUTH2_PROXY_COOKIE_SECRET
-          value: BASE64_ENCODED_CUSTOM_SECRET
+          value: <BASE64_ENCODED_CUSTOM_SECRET>
         ports:
         - containerPort: 4180
           protocol: TCP
@@ -384,7 +384,9 @@ spec:
     application: oauth2-proxy
 ```
 
-Deploy a sample application that should be protected.
+Now, everything is in place to add another service that we want to protect via the OAuth proxy and Azure Active Directory.
+
+First, deploy a sample application with a Kubernetes service that should be protected.
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -435,10 +437,18 @@ spec:
   ports:
     - port: 80
       targetPort: 3000
-
 ```
 
-Create ingress
+The sample is really simple: the application just shows all http headers that have been sent to it on a webpage.
+
+![App Registrations](/img/ingress-headers.png)
+
+Now, let's wire up everything. We create two ingress definitions:
+
+- one for the OAuth-Proxy on path `/oauth`
+- one for the application itself on root `/`
+
+Please replace `<SUBDOMAIN.YOUR_DOMAIN>` the URL you want to use, e.g. headers.project-unicorn.ddnss.de.
 
 ```yaml
 apiVersion: extensions/v1beta1
@@ -489,5 +499,17 @@ spec:
             backend:
               serviceName: headers-svc
               servicePort: 80
-
 ```
+
+A few notes on the two definitions. 
+
+If you look at the annotations of the first ingress, you can see that we tell NGINX to automatically rewrite `http` traffic to `https`: `nginx.ingress.kubernetes.io/ssl-redirect: "true"`. We also request a SSL certificate for the `spec.tls.hosts` entry by using `certmanager.k8s.io/cluster-issuer: letsencrypt-prod` (where we tell cert-manager to use our `ClusterIssuer` 'lets-encrypt' which in turn will request the certificate and put it in the `secret` called 'tls-secret').
+
+Let's have a look at the second ingress definition. There are two new annotations:
+
+- `nginx.ingress.kubernetes.io/auth-url` - this represents the endpoint where NGINX is checking, if a user has a valid session
+- `nginx.ingress.kubernetes.io/auth-signin` - this is the signin URL of our application. OAuth2-Proxy then redirects to the Azure Active Directory login endpoint
+
+Having all components in place now, let's try to access the application in the browser.
+
+![AAD Login](/img/ingress-aad-login.png)
