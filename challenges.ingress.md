@@ -14,7 +14,7 @@
 
 Kubernetes handles "east-west" or "cluster-internal" communication by assigning IP addresses to services / pods which can be reached cluster-wide. When it comes to "north-south" or external connectivity, there are several ways to achieve this. 
 
-First, you can assign a public IP to a node and define a `NodePort` service type (not recommended). 
+First, you can assign a public IP to a node and define a `NodePort` service type (not really recommended). 
 
 ![NodePort](/img/ingress_nodeport.png)
 
@@ -49,6 +49,8 @@ helm install stable/nginx-ingress --name clstr-ingress --set rbac.create=true,co
 
 ## Deploy Sample Applications ##
 
+First, deploy some sample application we can use to demonstrate the inress features. We also use Helm for that.
+
 ```shell
 $ helm repo add azure-samples https://azure-samples.github.io/helm-charts/
 
@@ -71,12 +73,9 @@ We deploy both applications with a frontend service of type `ClusterIP`, because
 
 ## Create Ingress ##
 
-Now that our sample applications are running (but still aren't reachable via the internet), we can create ingress definitions for each of the application. We will show two approaches:
+Now that our sample applications are running (but still aren't reachable via the internet), we can create ingress definitions for each of the application. We will demonstrate this by using `Domain-based routing` (you can also use e.g. path-based routing. You will see an example later when integrating AAD to login to an application).
 
-- Domain-based routing (sample)
-- Path based routing
-
-> **Optional:** for domain-based routing, you need a custom domain, you can use (and manage). If you don't have a domain, you can create a domain at a free domain provider for testing purposes. There are several services out there you can use, e.g. https://www.ddnss.de (supports wildcards) or https://www.noip.com (doesn't support wildcards). All you need to do is register a domain and point the *A-Record* to the IP address of your ingress controller. If you don't want to create an account at one of these providers, you can go through all of the samples...but some, you won't be able to complete.
+> **Optional, but highly recommended:** for domain-based routing, you need a custom domain, you can use (and manage). If you don't have a domain, you can create a domain at a free domain provider for testing purposes. There are several services out there you can use, e.g. https://www.ddnss.de (supports wildcards - we will need this feature!) or https://www.noip.com (doesn't support wildcards in the "free" plan). All you need to do is register a domain and point the *A-Record* to the IP address of your ingress controller. If you don't want to create an account at one of these providers, you can go through all of the samples...but you won't be able to complete this challenge.
 
 So, let's create ingress resources for our two applications:
 
@@ -125,9 +124,9 @@ Open your browser an test the ingress definitions. You should be corretly routed
 
 ## IP-Whitelisting ##
 
-Our first exmaple to leverage the features of our NGINX ingress controller, is to limit the access to our application by whitelisting IP address(-ranges). 
+Our first example that leverages the features of the NGINX ingress controller, is access-limitation to our application by whitelisting IP address(-ranges). 
 
-First, get the public IP-address of your machine by opening the following web page: https://www.whatismyip.com/
+First, get the public IP-address of your machine (e.g. by opening the following web page: https://www.whatismyip.com/).
 
 Adjust the ingress definition for the "Stranger-Things"-voting app to limit the access to this IP address.
 
@@ -153,11 +152,11 @@ spec:
 
 ```
 
-Visit the site with your browser and again with your mobile device (preferrably NOT via wireless connection :smile:).
+Visit the site with your browser and again with your mobile device (preferrably NOT via wireless connection :smile:). In one of the cases, you will be blocked!
 
 ## Rate Limiting ##
 
-**Rate Limiting** is used to control the amount of traffic a client create for your services. You can add annotations to your ingress definitions to influence the behavior of NGINX.
+**Rate Limiting** is used to control the amount of traffic a client creates for your services. You can add annotations to your ingress definitions to influence the behavior of NGINX.
 
 In this sample, we rate-limit one of our services with the value of "10 requests per minute". Other definitions can be found here: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#rate-limiting 
 
@@ -184,11 +183,14 @@ spec:
 
 > You can also "whitelist" certain IP addresses/address ranges that will be excluded for this setting via `nginx.ingress.kubernetes.io/limit-whitelist` annotation.
 
-Try to load the service a few times in your browser and see how the ingress controller limits your requests.
+Apply the ingress definition and try to load the service a few times in your browser. See how the ingress controller limits your requests.
 
 ## Basic Authentication ##
 
-Create a `auth` file: http://www.htaccesstools.com/htpasswd-generator/ or via 
+Now, we will protect one of our applications by using `basic-authentication` (username/password).
+
+### Pre-Requisites ###
+Create a `auth` file: http://www.htaccesstools.com/htpasswd-generator/ or via...
 
 ```shell
 $ htpasswd -c ./auth user1
@@ -204,6 +206,8 @@ Add the file as Kubernetes `secret`:
 ```shell
 $ kubectl create secret generic basic-auth --from-file=auth -n ingress-samples
 ```
+
+### Apply the configuration ###
 
 Now add the corresponding annotains that pick-up the `auth` file and enforce basic authentication on our ingress:
 
@@ -248,7 +252,7 @@ Then register a new app.
 
 In the "Redirect" section, enter the following URL (we will need that later):
 
-*https://<subdomain.domain>/oauth2/callback*
+*https://<subdomain.domain>/oauth2/callback* (e.g. https://headers.project-unicorn.ddnss.de/oauth2/callback)
 
 Click on "Register".
 
@@ -260,7 +264,7 @@ Copy the secret for later use.
 
 To be able to reach our application via https/SSL, we will leverage the "Let's Encrypt" service, that will give us free SSL certificates for our site.
 
-There is a very convienient way to create certifictes "on the fly" for our ingress definitions. Jetstack has created a Kubernetes addon called "Certmanager", that will automatically provision and manage TLS certificates in Kubernetes (Docs: https://docs.cert-manager.io/en/latest/). It will ensure certificates are valid and up to date periodically, and attempt to renew certificates at an appropriate time before expiration.
+There is a very convienient way to create certifictes "on the fly" for our ingress definitions. Jetstack has created a Kubernetes addon called "Certmanager", that will automatically provision and manage TLS certificates in Kubernetes (Docs: https://docs.cert-manager.io/en/latest/). It will ensure certificates are valid and attempt to renew certificates at an appropriate time before expiration.
 
 So, let's install that addon in our Kubernetes cluster.
 
@@ -319,6 +323,8 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
 ```
+
+### Deploy an Auth-Proxy ###
 
 Now that we are set to create certificates for our ingress definitions, let's install the authorization proxy that will take care of login us in and check, if a user has a valid session, before directing traffic to our services.
 
@@ -390,6 +396,8 @@ spec:
 
 Now, everything is in place to add another service that we want to protect via the OAuth proxy and Azure Active Directory.
 
+### Sample app to protect ###
+
 First, deploy a sample application with a Kubernetes service that should be protected.
 
 ```yaml
@@ -446,6 +454,8 @@ spec:
 The sample is really simple: the application just shows all http headers that have been sent to it on a webpage.
 
 ![App Registrations](/img/ingress-headers.png)
+
+### Finally, the Ingress ###
 
 Now, let's wire up everything. We create two ingress definitions:
 
@@ -507,13 +517,13 @@ spec:
 
 A few notes on the two definitions. 
 
-If you look at the annotations of the first ingress, you can see that we tell NGINX to automatically rewrite `http` traffic to `https`: `nginx.ingress.kubernetes.io/ssl-redirect: "true"`. We also request a SSL certificate for the `spec.tls.hosts` entry by using `certmanager.k8s.io/cluster-issuer: letsencrypt-prod` (where we tell cert-manager to use our `ClusterIssuer` 'lets-encrypt' which in turn will request the certificate and put it in the `secret` called 'tls-secret').
+If you look at the annotations of the first ingress, you can see that we tell NGINX to automatically rewrite `http` traffic to `https` (`nginx.ingress.kubernetes.io/ssl-redirect: "true"`). We also request a SSL certificate for the `spec.tls.hosts` entry by using `certmanager.k8s.io/cluster-issuer: letsencrypt-prod` (where we tell cert-manager to use our `ClusterIssuer` 'lets-encrypt' which in turn will request the certificate and put it in the `secret` called 'tls-secret').
 
 Let's have a look at the second ingress definition. There are two new annotations:
 
 - `nginx.ingress.kubernetes.io/auth-url` - this represents the endpoint where NGINX is checking, if a user has a valid session
 - `nginx.ingress.kubernetes.io/auth-signin` - this is the signin URL of our application. OAuth2-Proxy then redirects to the Azure Active Directory login endpoint
 
-Having all components in place now, let's try to access the application in the browser.
+Having all components in place now, let's try to access the application in the browser. You will see that you will be redirected to Azure Active Directory...what we wanted to achieve.
 
 ![AAD Login](/img/ingress-aad-login.png)
