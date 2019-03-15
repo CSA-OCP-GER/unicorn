@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: got-ing
+  namespace: ingress-samples
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: got.project-unicorn.ddnss.de
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: got-vote-front
+              servicePort: 80

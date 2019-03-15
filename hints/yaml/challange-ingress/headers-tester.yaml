@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web-deploy
+  labels:
+    application: web
+    tier: frontend
+  namespace: ingress-samples
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      application: web
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        application: web
+        tier: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: csaocpger/headertester:1.0
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: headers-svc
+  labels:
+    application: web
+    tier: frontend
+  namespace: ingress-samples
+spec:
+  selector:
+    application: web
+    tier: frontend
+  ports:
+    - port: 80
+      targetPort: 3000
