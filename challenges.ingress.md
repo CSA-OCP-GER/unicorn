@@ -125,7 +125,11 @@ Open your browser an test the ingress definitions. You should be corretly routed
 
 ## IP-Whitelisting ##
 
-Browser: https://www.whatismyip.com/
+Our first exmaple to leverage the features of our NGINX ingress controller, is to limit the access to our application by whitelisting IP address(-ranges). 
+
+First, get the public IP-address of your machine by opening the following web page: https://www.whatismyip.com/
+
+Adjust the ingress definition for the "Stranger-Things"-voting app to limit the access to this IP address.
 
 ```yaml
 apiVersion: extensions/v1beta1
