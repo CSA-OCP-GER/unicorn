@@ -1,5 +1,7 @@
 # Create a cluster with Azure Active Directory integration #
 
+> Need help in this challenge? Check deployment files [here :blue_book:](hints/yaml/challenge-aad)!
+
 ## Here's what you'll learn ##
 
 - Azure Active Directory
@@ -106,7 +108,7 @@ aks-nodepool1-14322398-2   Ready     agent     2h        v1.10.6
 
 ## Challenge: Create a ClusterRole/Group to be able to only read pods ##
 
-First, create a group in the Azure Active Directory connected to your cluster (note down the **object-id**!).
+First, create a group in the Azure Active Directory connected to your cluster (note down the **object-id** - you will have to use it in the `ClusterRoleBinding`!).
 
 Now create a new AAD user and assign the user to the group.
 
@@ -114,11 +116,35 @@ To be able to use the group in the Kubernetes cluster, create a **cluster-role**
 
 > Remember to use the "admin context"
 
+```yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: custom:pod-reader
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+```
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+ name: my-pod-readers
+roleRef:
+ apiGroup: rbac.authorization.k8s.io
+ kind: ClusterRole
+ name: custom:pod-reader
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: "GROUP_ID"
+```
+
 Now log in with the new user (if it's not working, delete the context and/or user in ~/.kube/config you used before to access the cluster via RBAC).
 - try to read the cluster nodes via `kubectl get nodes`
 - try to read the pods running in the cluster via `kubectl get pods`
-
-> Need help? Check deployment files [here :blue_book:](hints/yaml/challenge-1)!
 
 # Housekeeping #
 

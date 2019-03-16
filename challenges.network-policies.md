@@ -1,5 +1,7 @@
 # Implement Network Policies #
 
+> Need help in this challenge? Check deployment files [here :blue_book:](hints/yaml/challenge-network-policies)!
+
 ## Here is what you will learn ##
 
 - learn about the differnet isolation approaches
@@ -22,6 +24,7 @@ When it comes to isolating workloads with Kubernetes, there are two "high-level"
 **Logical isolation** means that you run one Kubernetes cluster and implement the "boundries" by adding and enforcing network policies.
 
 ![Namespace vs. Physical Isolation](/img/npm_log_phys_isolation.png)
+*Isolation Strategies - comparison*
 
 In this chapter, you will learn how to work with the `NetworkPolicy` object in Kubernetes.
 
@@ -217,4 +220,4 @@ $ kubectl delete service/nginx
 $ kubectl delete deployment/nginx
 ```
 
-> DON'T FORGET :point_up: If you don't need the current Kubernetes cluster anymore, delete it :smile:
+> DON'T FORGET :point_up: If you don't need the current Kubernetes cluster anymore, delete it.

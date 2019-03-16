@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    application: oauth2-proxy
+  name: oauth2-proxy-deployment
+  namespace: ingress-samples
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: oauth2-proxy
+  template:
+    metadata:
+      labels:
+        application: oauth2-proxy
+    spec:
+      containers:
+        - args:
+            - --provider=azure
+            - --azure-tenant=<AZURE_TENANT_ID>
+            - --pass-access-token=true
+            - --cookie-name=_mycookie
+            - --email-domain=*
+            - --upstream=file:///dev/null
+            - --http-address=0.0.0.0:4180
+          name: oauth2-proxy
+          image: a5huynh/oauth2_proxy:2.2
+          env:
+            - name: OAUTH2_PROXY_CLIENT_ID
+              value: <APPLICATION_ID>
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              value: <APPLICATION_SECRET>
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              value: <BASE64_ENCODED_SECRET>
+          ports:
+            - containerPort: 4180
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    application: oauth2-proxy
+  name: oauth2-proxy-svc
+  namespace: ingress-samples
+spec:
+  ports:
+    - name: http
+      port: 4180
+      protocol: TCP
+      targetPort: 4180
+  selector:
+    application: oauth2-proxy

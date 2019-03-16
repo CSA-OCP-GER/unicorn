@@ -10,7 +10,7 @@ Welcome to **Project Unicorn** - a hands on workshop to widen your skills within
 1. [Challenge 2](challenges.scheduling.md) - Learn about Kubernetes scheduling in detail and resource management
 1. [Challenge 3](challenges.network-policies.md) - Learn about Kubernetes isolation strategies and network policies
 1. [Challenge 4](challenges.ingress.md) - Implement ingress rules and get to know advanced ingress configuration
-1. [Challenge 5](challenges.appgtw.md) - Create a Kubernetes cluster behind an Azure Application Gateway with a Web Firewall
+1. [Challenge 5](challenges.appgtw.md) - Create a Kubernetes cluster behind an Azure Application Gateway with a Web Application Firewall (WAF)
 1. [Challenge 6](challenges.aadpodidentity.md) - Learn about Managed Service Identity / Managed Pod Identity 
 1. [Challenge 7](challenges.sidecar.md) - Get familiar with the sidecar pattern
 1. [Challenge 8](challenges.istio.0.sm.md) - Service Mesh FTW! Learn about Istio and the various features of it.

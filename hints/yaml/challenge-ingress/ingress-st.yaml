@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: stranger-things-ing
+  namespace: ingress-samples
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: stranger-things.<DOMAIN>
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: stranger-things-vote-front
+              servicePort: 80

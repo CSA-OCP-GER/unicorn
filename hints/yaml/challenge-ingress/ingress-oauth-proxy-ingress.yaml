@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+  name: oauth2-ingress
+  namespace: ingress-samples
+spec:
+  rules:
+    - host: <SUBDOMAIN.YOUR_DOMAIN>
+      http:
+        paths:
+          - path: /oauth2
+            backend:
+              serviceName: oauth2-proxy-svc
+              servicePort: 4180
+  tls:
+    - hosts:
+        - <SUBDOMAIN.YOUR_DOMAIN>
+      secretName: tls-secret
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: headers-ing
+  namespace: ingress-samples
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$request_uri"
+spec:
+  tls:
+    - hosts:
+        - <SUBDOMAIN.YOUR_DOMAIN>
+      secretName: tls-secret
+  rules:
+    - host: <SUBDOMAIN.YOUR_DOMAIN>
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: headers-svc
+              servicePort: 80
