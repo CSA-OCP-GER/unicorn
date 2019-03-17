@@ -2,7 +2,7 @@
 
 ## Here is what you learn
 
-- Create a deployment with an additional pod that acts as proxy for your API.
+- Create a deployment with an additional container that acts as proxy for your API.
 - Your API is only accessible from the proxy.
 
 To demo the sidecar pattern an [application](src/sidecar/src) is already implemented. The application consists of two components that are implemented using ASP.NET Core.
