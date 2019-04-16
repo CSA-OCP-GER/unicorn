@@ -7,6 +7,24 @@
 - Create an Azure Key Vault and store credentials
 - Deploy a pod that uses a user-assigned managed identity to access an Azure Key Vault
 
+## Access Azure resources in your workload
+
+To access Azure resources in your workload, your workload must be authorized using a Service Principal. 
+
+![alt text](img/sp_access_azure.png)
+
+Using a Service Principal means, that as a developer you have to store client id and client secret in your application settings. You are responsible for ensuring that this information does not fall into the wrong hands.
+In addition you have to do a rolling update for the key credential when it expires.
+
+With Azure [MSI (Managed Service Identity)](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
+) you can assign an AAD identity to your workload that can be used to authorize access to Azure resources. Your workload can acquire an AAD token before acessing Azure resources. The created Service Principal is fully managed by Azure.
+
+![alt text](img/azure-msi.png)
+
+With [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) you can assign an AAD identity to your pod.
+
+![alt text](img/aad_pod_identity.png)
+
 ## Deploy the  aad-pod-identity infra in your existing cluster ##
 
 Open a shell and run the following ```kubectl create``` command:
