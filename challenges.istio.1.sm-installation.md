@@ -10,10 +10,10 @@
 
 ## Installation via Helm ##
 
-Download Istio Release (1.0.5 / at the time of writing. Please stick to that version.): https://github.com/istio/istio/releases/tag/1.0.5
+Download Istio Release (1.1.3 / at the time of writing. Please stick to that version.): https://github.com/istio/istio/releases/tag/1.1.3
 
 Unpack the archive to a folder underneath the Git repo.
-
+<!-- 
 ### Install Custom Resource Definitions ###
 
 Go to the directory where you unpacked Istio and run the following command.
@@ -25,7 +25,7 @@ customresourcedefinition.apiextensions.k8s.io "virtualservices.networking.istio.
 customresourcedefinition.apiextensions.k8s.io "destinationrules.networking.istio.io" created
 [...]
 customresourcedefinition.apiextensions.k8s.io "handlers.config.istio.io" created
-```
+``` -->
 
 ### Configure Helm/Tiller ###
 
@@ -44,10 +44,22 @@ $ helm init --service-account tiller
 
 ### Install Istio via Helm Chart ###
 
-Now it's time to install Istio with default configuration onto your cluster:
+First, install the Istio Custom Resource Definitions (CRDs)
 
 ```shell
-$ helm install install/kubernetes/helm/istio --name istio --namespace istio-system
+$ helm install install/kubernetes/helm/istio-init --name istio-init --namespace istio-system
+```
+
+Check, that all CRDs have been installed successfully
+
+```shell
+$ kubectl get crds
+```
+
+Now it's time to install Istio with "demo" configuration onto your cluster (see https://istio.io/docs/setup/kubernetes/additional-setup/config-profiles/):
+
+```shell
+$ helm install install/kubernetes/helm/istio --name istio --namespace istio-system --values install/kubernetes/helm/istio/values-istio-demo.yaml
 
 [...]
 ```
