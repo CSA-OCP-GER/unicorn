@@ -10,7 +10,7 @@
 
 ## Installation via Helm ##
 
-Download Istio Release (1.0.5 / at the time of writing. Please stick to that version.): https://github.com/istio/istio/releases/latest
+Download Istio Release (1.0.5 / at the time of writing. Please stick to that version.): https://github.com/istio/istio/releases/tag/1.0.5
 
 Unpack the archive to a folder underneath the Git repo.
 
