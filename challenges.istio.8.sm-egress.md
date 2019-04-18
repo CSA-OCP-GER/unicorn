@@ -2,7 +2,7 @@
 
 By default, Istio-enabled services are unable to access URLs outside of your cluster, because the pod uses iptables to transparently redirect all outbound traffic to the sidecar proxy, which only handles intra-cluster destinations.
 
-> NOTE: This behavior has change in Istio 1.1! The default outbound traffic mode is `ALLOW_ANY`. All extrenal calls will succeed by default. Anyway, you still can control whether traffic is allowed to leave the service mesh or not. If you are using Istio 1.1.x please first changed the default behavior, see section **Isitio 1.1 Pre-Requisites**
+> NOTE: This behavior has changed in Istio 1.1! The default outbound traffic mode is `ALLOW_ANY`. All extrenal calls will succeed by default. Anyway, you still can control whether traffic is allowed to leave the service mesh or not. If you are using Istio 1.1.x please first changed the default behavior, see section **Isitio 1.1 Pre-Requisites**
 
 This is why external calls will fail by default. You have to explicitly enable them by "whitlisting" these services via `ServiceEntry` definitions.
 
