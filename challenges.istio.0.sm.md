@@ -26,7 +26,7 @@ Istio adds:
 
 ## Prerequisites ##
 
-Istio version >= 1.0.0 and Kubernetes >= 1.10.6.
+Istio version >= 1.1.3 and Kubernetes >= 1.10.6.
 
 ## Here's what you'll learn ##
 
