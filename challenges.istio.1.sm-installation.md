@@ -13,19 +13,6 @@
 Download Istio Release (1.1.3 / at the time of writing. Please stick to that version.): https://github.com/istio/istio/releases/tag/1.1.3
 
 Unpack the archive to a folder underneath the Git repo.
-<!-- 
-### Install Custom Resource Definitions ###
-
-Go to the directory where you unpacked Istio and run the following command.
-
-```shell
-$ kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
-
-customresourcedefinition.apiextensions.k8s.io "virtualservices.networking.istio.io" created
-customresourcedefinition.apiextensions.k8s.io "destinationrules.networking.istio.io" created
-[...]
-customresourcedefinition.apiextensions.k8s.io "handlers.config.istio.io" created
-``` -->
 
 ### Configure Helm/Tiller ###
 
