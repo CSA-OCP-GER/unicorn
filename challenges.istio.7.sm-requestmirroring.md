@@ -144,11 +144,15 @@ spec:
       subset: v3
 ```
 
+The important part is the `mirror` section in the `VirtualService` definition. In this section, we tell the Istio proxy to send requests that have the destination `calcbackendsvc` with subset `v1` also to subset `v3` - but without (!) returning the response. By using this technique, you can test a new version of your service in production and be sure, that possible errors or performance issues will never hit your end-users.
+
 ## Open the Grafana Dashboard and compare v1 against v3 ##
 
 Now, it's time to check whether our developers were right and that the new service performs better (in terms of calculation time/mermory consumption etc.) than our "old" service. Run the application in "loop-mode" for some time...then...
 
 Go to the Grafana Dashboard "Istio Service Mesh" and select the services you wish to compare under "Service Workload".
+
+> In a newer version of Grafana, the Dashboard is called "Istio Service Dashboard" and the chart is named "Incoming Request Duration by Source"
 
 How would you decide?
 
