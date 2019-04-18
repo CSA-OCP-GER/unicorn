@@ -17,7 +17,7 @@ In Istio 1.1, you have to enable egress-traffic control via the Istio ConfigMap.
 
 Edit the configmap by executing `kubectl edit configmap istio -n istio-system` and replacing `ALLOW_ANY` with `REGISTRY_ONLY`.
 
-> There should be two occurences of the term ÀLLOW_ANY`. Now, wait several seconds before all proxys are updated with the new configuration.
+> There should be two occurences of the term `ALLOW_ANY`. Now, wait several seconds before all proxys are updated with the new configuration.
 
 ## Setup ##
 
