@@ -1,10 +1,10 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: calcbackend-rule-timeout
+  name: httpbin
   namespace: challengeistio
 spec:
-  host: calcbackendsvc
+  host: httpbin
   trafficPolicy:
     connectionPool:
       tcp:
