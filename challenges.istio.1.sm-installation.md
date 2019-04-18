@@ -133,7 +133,7 @@ spec:
 ```
 
 ```shell
-$ kubectl apply -f hints/yaml/challengeistio/base-sample-app.yaml
+$ kubectl apply -f hints/yaml/challenge-istio/base-sample-app.yaml
 
 service "calcfrontendsvc" created
 deployment.extensions "jscalcfrontend-v2" created
