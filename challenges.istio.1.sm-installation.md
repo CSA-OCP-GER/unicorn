@@ -36,7 +36,9 @@ $ kubectl apply -f install/kubernetes/helm/helm-service-account.yaml
 
 serviceaccount "tiller" created
 clusterrolebinding.rbac.authorization.k8s.io "tiller" created
+```
 
+```shell
 $ helm init --service-account tiller
 
 [...]
@@ -90,7 +92,9 @@ prometheus                 1         1         1            1           3m
 $ kubectl create namespace challengeistio
 
 Namespace challengeistio created.
+```
 
+```shell
 ## Label namespace to auto-inject istio sidecar during deployments
 $ kubectl label namespace challengeistio istio-injection=enabled
 ```
@@ -100,9 +104,9 @@ $ kubectl label namespace challengeistio istio-injection=enabled
 This is the base sample application where all further deployments will depend on. It consists of the following pods/services (standard Kubernetes objects):
 
 - Front end pod with the Angular application
-- Frontend service pointing to these pods --> internal service that is **not** accessible via internet (external LoadBalancer)!
+- Frontend service pointing to these pods --> internal service that is **not** accessible via internet (no external LoadBalancer)!
 - Backend pods with the "business logic" (three implementations: Go, .NETCore & NodeJS)
-- Backend service pointing to these pods --> internal service that is **not** accessible via internet (external LoadBalancer)!
+- Backend service pointing to these pods --> internal service that is **not** accessible via internet (no external LoadBalancer)!
 
 ```yaml
 apiVersion: v1
