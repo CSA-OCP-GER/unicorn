@@ -150,6 +150,8 @@ Now, it's time to check whether our developers were right and that the new servi
 
 Go to the Grafana Dashboard "Istio Service Mesh" and select the services you wish to compare under "Service Workload".
 
+> In a newer version of Grafana, the Dashboard is called "Istio Service Dashboard" and the chart is named "Incoming Request Duration by Source"
+
 How would you decide?
 
 > Also check in the browser, that no requests are served to the frontend with service `v3`!
