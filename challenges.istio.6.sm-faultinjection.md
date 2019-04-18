@@ -61,6 +61,43 @@ spec:
       weight: 50
 ```
 
+Deploy a new frontend that is capable of showing errors as they occur:
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jscalcfrontend-v2
+  namespace: challengeistio
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        name: jscalcfrontend
+        app: frontend
+        version: v2
+    spec:
+      containers:
+      - name: jscalcfrontend
+        image: csaocpger/jscalcfrontend:9.0
+        ports:
+          - containerPort: 80
+            name: http         
+            protocol: TCP
+        env: 
+          - name: "ENDPOINT"
+            value: "calcbackendsvc"
+          - name: "PORT"
+            value: "80"
+```
+
 Now open up a browser window and check that everything works as expected.
 
 ## Inject Faults ##
