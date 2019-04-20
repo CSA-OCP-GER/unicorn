@@ -30,13 +30,13 @@ With [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) you can assig
 Open a shell and run the following ```kubectl create``` command:
 
 ```Shell
-kubectl create -f https://raw.githubusercontent.com/Azure/aad-pod-identity/1.3.0-mic-1.4.0-nmi/deploy/infra/deployment.yaml
+kubectl create -f https://raw.githubusercontent.com/Azure/aad-pod-identity/master/deploy/infra/deployment.yaml
 ```
 
 If you have an RBAC enabled cluster run the following ```kubectl create``` command:
 
 ```Shell
-kubectl create -f https://raw.githubusercontent.com/Azure/aad-pod-identity/1.3.0-mic-1.4.0-nmi/deploy/infra/deployment-rbac.yaml
+kubectl create -f https://raw.githubusercontent.com/Azure/aad-pod-identity/master/deploy/infra/deployment-rbac.yaml
 ```
 
 Now you have NMI and MIC running in your cluster. To get a detailed description of NMI and MIC take a look [here](https://github.com/Azure/aad-pod-identity#design)
