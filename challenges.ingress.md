@@ -243,7 +243,9 @@ In this section, we are going to enable authentication via Azure Active Director
 
 Follow these steps:
 
-Go to the portal and under "Azure Active Directory", click on "App Registrations (Preview)"
+Go to the portal and under "Azure Active Directory", click on "App Registrations (Preview)".
+
+> If you created a directory for this workshop, use that AAD.
 
 ![App Registrations](/img/ingress-app-reg1.png)
 
