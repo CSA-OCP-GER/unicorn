@@ -48,6 +48,19 @@ helm install stable/nginx-ingress --name clstr-ingress --set rbac.create=true,co
 
 > **Info:** we limit the scope of our ingress controller to a certain namespace (*ingress-samples*). In production environments, it is a good practices to not share an ingress controller for multiple environments. NGINX configuration quickly grows up to thousands of lines and suddenly starts to have config reload issues! Therefore, try to keep things clean, give each environment its own controller and avoid such problems from the beginning.
 
+In case you get an error when using Helm / Tiller:
+
+```shell
+kubectl --namespace kube-system create serviceaccount tiller
+ 
+kubectl create clusterrolebinding tiller-cluster-rule \
+--clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+ 
+kubectl --namespace kube-system patch deploy tiller-deploy \
+-p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+
+```
+
 ## Deploy Sample Applications ##
 
 First, deploy some sample application we can use to demonstrate the inress features. We also use Helm for that.
