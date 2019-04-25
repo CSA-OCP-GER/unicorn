@@ -32,7 +32,7 @@ Istio version >= 1.1.3 and Kubernetes >= 1.10.6.
 
 1. [How to install Istio into your AKS cluster](challenges.istio.1.sm-installation.md) :star:
 1. [How to configure ingress routes and request routing](challenges.istio.2.sm-ingress-rr.md) :star:
-1. [How to remove slow/buggy containers temporarily and implement retry strategies](challenges.istio.3.sm-remove-retry.md)
+1. [How to remove slow/buggy containers temporarily and implement retry strategies](challenges.istio.3.sm-remove-retry.md) (UNHEALTHY)
 1. [How to implement the Circuit Breaker pattern](challenges.istio.4.sm-circuitbreaker.md)
 1. [How to gain insights about your applications routes](challenges.istio.5.sm-insights.md) :star:
 1. [How to play with fault injection to challenge your services](challenges.istio.6.sm-faultinjection.md)
