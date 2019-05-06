@@ -186,7 +186,7 @@ metadata:
   name: mylow-priority
 value: 10
 globalDefault: false
-description: "This is the high-prio class."
+description: "This is the low-prio class."
 ```
 
 Now, we need to simulate a situation, where pods can't be scheduled anymore. Therefore, we deploy many pods, that alltogether request a lot of CPU.
