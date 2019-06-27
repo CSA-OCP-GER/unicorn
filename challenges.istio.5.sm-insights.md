@@ -75,7 +75,7 @@ Open your browser on http://localhost:3000.
 
 ### Todos for you ###
 
-First, run the application in **loop-mode** and put some load on your cluster.
+First, run the Calculator application in **loop-mode** and put some load on your cluster.
 
 Now...
 - get familiar with the Grafana Dashboard and the preconfigured charts (under `Home` dropdown > Istio dashboards)
