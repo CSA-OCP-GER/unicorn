@@ -34,6 +34,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: httpbin
+  namespace: challengeistio
 spec:
   replicas: 1
   template:
