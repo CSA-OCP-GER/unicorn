@@ -5,6 +5,7 @@
 ## Here is what you will learn ##
 
 - learn about the differnet isolation approaches
+- install cluster with either Azure CNI or kubenet and enable different NetworkPolicy solutions
 - apply NetworkPolicy definitions to isolate workloads on one Kubernetes cluster
 
 ## Tenant / Team / Environment Isolation ##
@@ -26,9 +27,14 @@ When it comes to isolating workloads with Kubernetes, there are two "high-level"
 ![Namespace vs. Physical Isolation](/img/npm_log_phys_isolation.png)
 *Isolation Strategies - comparison*
 
-In this chapter, you will learn how to work with the `NetworkPolicy` object in Kubernetes.
+In this chapter, you will learn how to work with the `NetworkPolicy` object in Kubernetes. To be able to test this, we need a new cluster. There are two options to work with Network Policies:
 
-## Setup New Cluster with Azure CNI / Advanced Networking ##
+- Azure Network Policy Manager (NPM) - works in combination with Azure CNI
+- Calico Network Policies, an open-source network and network security solution founded by [Tigera](https://www.tigera.io/) - works with kubenet and Azure CNI
+
+You can choose between these two options.
+
+## **Option 1**: Setup New Cluster with Azure CNI / Advanced Networking ##
 
 For this example to work, you will need a Kubernetes Cluster with "Advanced Networking". Please create a cluster either via Azure CLI or via the Azure Portal (you can find detailed information abput it here: https://docs.microsoft.com/de-de/azure/aks/configure-azure-cni#configure-networking---cli) and download the cluster config.
 
@@ -52,7 +58,18 @@ $ kubectl get pods -n kube-system --selector=k8s-app=azure-npm -o wide
 
 ![Azure NPM](/img/azure-npm-check.png)
 
-## Samples ##
+## **Option 2**: Setup a new Cluster with Calico plugin ##
+
+Create a new cluster either with Azure CNI ("Advanced Networking") or with standard kubenet and enable Calico. For the sake of simplicity, the sample will show the latter option:
+
+```shell
+az aks create --resource-group <RESOURCE_GROUP> --name <CLUSTERNAME> 
+  --generate-ssh-keys \
+  --network-policy calico \
+  --network-plugin kubenet
+```
+
+## Samples (work with both options) ##
 
 To showcase the abilities of `NetworkPolicies`, we are going to implement a few samples.
 
