@@ -63,7 +63,7 @@ $ kubectl get pods -n kube-system --selector=k8s-app=azure-npm -o wide
 Create a new cluster either with Azure CNI ("Advanced Networking") or with standard kubenet and enable Calico. For the sake of simplicity, the sample will show the latter option:
 
 ```shell
-az aks create --resource-group <RESOURCE_GROUP> --name <CLUSTERNAME> 
+$ az aks create --resource-group <RESOURCE_GROUP> --name <CLUSTERNAME> 
   --generate-ssh-keys \
   --network-policy calico \
   --network-plugin kubenet
