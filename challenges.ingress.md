@@ -71,12 +71,30 @@ $ helm repo add azure-samples https://azure-samples.github.io/helm-charts/
 $ helm install azure-samples/azure-vote --set title="Winter Is Coming?" --set value1="Jon and Daenerys say YES" --set value2="Cersei says NO" --set serviceName=got-vote --set serviceType=ClusterIP --set serviceNameFront=got-vote-front --name got-vote --namespace ingress-samples
 ```
 
+Test that the application is running via port-forwarding:
+
+```shell
+$ kubectl port-forward svc/got-vote-front 8080:80 -n ingress-samples
+```
+
+Your browser should be able to access the web application
+
 ![GOT Voting](/img/ingress_got_vote.png)
 
 *GOT Voting App*
 
+> If everything works fine, stop the port-forwarding.
+
+Next sample application:
+
 ```shell
 $ helm install azure-samples/azure-vote --set title="Is the Hawkins National Laboratory a safe place?" --set value1="Will Byers says no" --set value2="Eleven says NOOOOOOO!!" --set serviceName=stranger-things-vote --set serviceType=ClusterIP --set serviceNameFront=stranger-things-vote-front --name stranger-things-vote --namespace ingress-samples
+```
+
+Again, test via port-forwarding:
+
+```shell
+$ kubectl port-forward svc/stranger-things-vote-front 8080:80 -n ingress-samples
 ```
 
 ![Stranger Things Voting](/img/ingress_st_vote.png)
