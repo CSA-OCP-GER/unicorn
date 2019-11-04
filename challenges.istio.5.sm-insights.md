@@ -21,54 +21,43 @@ In our example, we are going to use the "built-in" options Prometheus/Grafan and
 - Learn how to use the Kialia Graph
 - Gain insights about "the moving parts" your service mesh
 
-## Enable Grafana / Prometheus ##
+## Grafana / Prometheus ##
 
-> If you have installed Istio with the "DEFAULT" profile, you need to do the following steps. Otherwise (profile "DEMO"), Grafana is already installed and ready to use. Just move on to **Access Grafana**
-
-We installed Istio with a Helm chart that already contains all the information/configuration to run Prometheus/Grafana...it just isn't installed by default. So we need to adjust the `values.yaml` file to fit our needs. 
-
-Open `values.yaml` under `install/kubernetes/helm/istio` and adjust the following values:
-
-```yaml
-grafana:
-  enabled: true
-``` 
-> You can expose Grafana via Service Type `LoadBalancer`, but: It is NOT recommended !! In production environments, use at least a custom ingress definition with e.g. IP Whitelisting
-
-When finished editing, upgrade your Istio release:
-
-```shell
-$ helm upgrade istio install/kubernetes/helm/istio -f .\install\kubernetes\helm\istio\values.yaml
-```
-
-Now wait approximately one minute.
-
-```shell
-$ kubectl get po -n istio-system
-
-NAME                                     READY     STATUS      RESTARTS   AGE
-grafana-c49f9df64-8x574                  1/1       Running     0          20h
-istio-citadel-7f699dc8c8-x2p8z           1/1       Running     0          20h
-istio-egressgateway-54f556bc5c-2qqmc     1/1       Running     0          20h
-istio-galley-687664875b-ldc2s            1/1       Running     0          20h
-istio-ingressgateway-688d5886d-q8fq6     1/1       Running     0          20h
-istio-init-crd-10-mp565                  0/1       Completed   0          20h
-istio-init-crd-11-mq926                  0/1       Completed   0          20h
-istio-pilot-66964dfcd6-dfhdl             2/2       Running     0          20h
-istio-policy-5bccd487c8-5gcc8            2/2       Running     2          20h
-istio-sidecar-injector-d48786c5c-7vzzf   1/1       Running     0          20h
-istio-telemetry-59794cc5b4-cqzxx         2/2       Running     2          20h
-istio-tracing-79db5954f-kz2fr            1/1       Running     0          20h
-kiali-5c4cdbb869-f75xm                   1/1       Running     0          20h
-prometheus-67599bf55b-wgnr6              1/1       Running     0          20h
-```
+> Because we installed Istio with the profile "DEMO", Grafana is already installed and ready to use. Just move on to **Access Grafana**
 
 ### Access Grafana ### 
 
-Because we did not expose the Grafana Dashboard to the public internet, we need to access Grafana via port-forwarding:
+Because the Grafana Dashboard is not exposed to the public internet, we need to access Grafana via port-forwarding:
+
+First, get the Grafana service:
 
 ```shell
-$ kubectl port-forward <GRAFANA-POD-NAME> 3000:3000 -n istio-system
+$ kubectl get svc -n istio-system
+
+NAME                     TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                                                                                                                                      AGE
+grafana                  ClusterIP      10.0.171.17    <none>          3000/TCP                                                                                                                                     23m
+istio-citadel            ClusterIP      10.0.170.169   <none>          8060/TCP,15014/TCP                                                                                                                           23m
+istio-egressgateway      ClusterIP      10.0.219.107   <none>          80/TCP,443/TCP,15443/TCP                                                                                                                     23m
+istio-galley             ClusterIP      10.0.218.14    <none>          443/TCP,15014/TCP,9901/TCP                                                                                                                   23m
+istio-ingressgateway     LoadBalancer   10.0.95.107    52.157.96.148   15020:30313/TCP,80:31380/TCP,443:31390/TCP,31400:31400/TCP,15029:32424/TCP,15030:32535/TCP,15031:32676/TCP,15032:32171/TCP,15443:32596/TCP   23m
+istio-pilot              ClusterIP      10.0.118.30    <none>          15010/TCP,15011/TCP,8080/TCP,15014/TCP                                                                                                       23m
+istio-policy             ClusterIP      10.0.253.232   <none>          9091/TCP,15004/TCP,15014/TCP                                                                                                                 23m
+istio-sidecar-injector   ClusterIP      10.0.221.133   <none>          443/TCP,15014/TCP                                                                                                                            23m
+istio-telemetry          ClusterIP      10.0.197.52    <none>          9091/TCP,15004/TCP,15014/TCP,42422/TCP                                                                                                       23m
+jaeger-agent             ClusterIP      None           <none>          5775/UDP,6831/UDP,6832/UDP                                                                                                                   23m
+jaeger-collector         ClusterIP      10.0.27.86     <none>          14267/TCP,14268/TCP                                                                                                                          23m
+jaeger-query             ClusterIP      10.0.234.107   <none>          16686/TCP                                                                                                                                    23m
+kiali                    ClusterIP      10.0.120.41    <none>          20001/TCP                                                                                                                                    23m
+prometheus               ClusterIP      10.0.188.227   <none>          9090/TCP                                                                                                                                     23m
+tracing                  ClusterIP      10.0.149.89    <none>          80/TCP                                                                                                                                       23m
+zipkin                   ClusterIP      10.0.8.183     <none>          9411/TCP                                                                                                                                     23m
+```
+
+
+```shell
+$ kubectl port-forward svc/grafana 3000:3000 -n istio-system
+Forwarding from 127.0.0.1:3000 -> 3000
+Forwarding from [::1]:3000 -> 3000
 ```
 
 Open your browser on http://localhost:3000. 
@@ -89,7 +78,7 @@ Now...
 
 ## Enable Kiali ##
 
-> If you have installed Istio with the "DEFAULT" profile, you need to do the following steps. Otherwise (profile "DEMO"), Kiali is already installed and ready to use. Just move on to **Access Kiali**
+> Because we installed Istio with the profile "DEMO", Kiali is already installed and ready to use. Just move on to **Access Kiali**
 
 As mentioned above, Kiali is a new solution that is designed especially for Istio. It can answer the following questions:
 
@@ -98,34 +87,14 @@ As mentioned above, Kiali is a new solution that is designed especially for Isti
 - how do they perform?
 - are there any errors in communication?
 
-To be able to use Kiali, we need to install/enable it as we did with the Grafana dashboard.
-
-So, first, edit the `values.yaml` file and adjust the following properties:
-
-```yaml
-kiali:
-  enabled: true
-```
-
-> If you want to, also adjust username and password for the Kiali admin user.
-
-Now, upgrade the Istio release:
-
-```shell
-$ helm upgrade istio install/kubernetes/helm/istio -f .\install\kubernetes\helm\istio\values.yaml
-```
-
 ### Access Kiali ###
 
 To be able to open the Kiali, execute the following command:
 
 ```shell
-$ kubectl get po -n istio-system
-```
-Use the name of the pod running Kiali in the next command.
-
-```shell
-$ kubectl port-forward <KIALI_POD_NAME> 20001:20001 -n istio-system
+$ kubectl port-forward svc/kiali 20001:20001 -n istio-system
+Forwarding from 127.0.0.1:20001 -> 20001
+Forwarding from [::1]:20001 -> 20001
 ```
 
 Now, open your browser at http://localhost:20001/kiali/console/overview and login with the standard credentials (admin/admin).
