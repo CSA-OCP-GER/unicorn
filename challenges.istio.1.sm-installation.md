@@ -16,7 +16,7 @@ Unpack the archive to a folder underneath the Git repo.
 
 ### Install Istio ###
 
-First, install the Istio Custom Resource Definitions (CRDs)
+First, install the Istio Custom Resource Definitions / CRDs (from within the directory you unpacked Istio to)
 
 ```shell
 $ kubectl apply -f install/kubernetes/helm/istio-init/files/
