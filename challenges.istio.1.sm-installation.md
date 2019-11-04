@@ -10,7 +10,7 @@
 
 ## Installation ##
 
-Download Istio Release (1.3.4 / at the time of writing. Please stick to that version.): https://github.com/istio/istio/releases/tag/1.3.4
+Download Istio Release (1.3.4 / at the time of writing. Please stick to that version.): <https://github.com/istio/istio/releases/tag/1.3.4>
 
 Unpack the archive to a folder underneath the Git repo.
 
@@ -28,7 +28,7 @@ Check, that all CRDs have been installed successfully
 $ kubectl get crds
 ```
 
-Now it's time to install Istio with "demo" configuration onto your cluster (see https://istio.io/docs/setup/kubernetes/additional-setup/config-profiles/):
+Now it's time to install Istio with "demo" configuration onto your cluster (see <https://istio.io/docs/setup/kubernetes/additional-setup/config-profiles/):>
 
 ```shell
 $ kubectl apply -f install/kubernetes/istio-demo.yaml

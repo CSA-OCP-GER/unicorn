@@ -83,3 +83,4 @@ apps/aspnetcore-sidecar/SidecarProxy/SidecarProxy.csproj.user
 src/**
 Secrets.text
 ~$ProjectUnicorn_v1.pptx
+test
