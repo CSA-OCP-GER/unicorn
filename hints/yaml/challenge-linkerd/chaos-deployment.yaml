@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: chaos
+  name: chaos
+  namespace: challengelinkerd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: chaos
+  template:
+    metadata:
+      labels:
+        run: chaos
+    spec:
+      containers:
+      - image: csaocpger/chaos:4
+        name: chaos
+      serviceAccountName: chaos
+      automountServiceAccountToken: true
