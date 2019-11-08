@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: quotesfrontendsvc
+  namespace: challengelinkerd
+  labels:
+    name: quotesfrontendsvc
+    app: frontend
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontend
+  ports:
+   - port: 80
+     name: http
+     targetPort: 80
+     protocol: TCP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: quotesfrontend
+  namespace: challengelinkerd
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        name: quotesfrontend
+        app: frontend
+        version: v1
+    spec:
+      containers:
+      - name: quotesfrontend
+        image: csaocpger/quotesfrontend:3
+        volumeMounts:
+          - mountPath: "/usr/share/nginx/html/settings"
+            name: uisettings
+            readOnly: true
+      volumes:
+      - name: uisettings
+        secret:
+          secretName: uisettings

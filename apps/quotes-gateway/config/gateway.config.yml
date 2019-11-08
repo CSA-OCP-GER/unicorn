@@ -1,0 +1,39 @@
+http:
+  port: ${GATEWAY_PORT:-8070}
+admin:
+  port: 9876
+  host: localhost
+apiEndpoints:
+  quotesapi:
+    host: "*"
+    paths: "/quotes"
+    methods: ["GET", "OPTIONS"]
+serviceEndpoints:
+  quotes:
+    url: ${GATEWAY_QUOTES_URL:-http://localhost:3000/api}
+policies:
+  - cors
+  - expression
+  - log
+  - proxy
+  - rate-limit
+pipelines:
+  quotes:
+    apiEndpoints:
+      - quotesapi
+    policies:
+      - cors: &cors
+          - action:
+              origin: "*"
+              methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS']
+              maxAge: 600
+      - log: &log
+          - action: # array of condition/actions objects
+              message: ${req.method} ${req.originalUrl} # parameter for log action
+      - proxy: &proxy-quotes
+          - action:
+              serviceEndpoint: quotes
+              changeOrigin: true
+              prependPath:  true
+              ignorePath:   false
+              stripPath:    false

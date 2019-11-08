@@ -1,0 +1,13 @@
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  creationTimestamp: null
+  name: quotes-backend.challengelinkerd.svc.cluster.local
+  namespace: challengelinkerd
+spec:
+  routes:
+  - condition:
+      method: GET
+      pathRegex: /api/quotes
+    name: GET /api/quotes
+    #    isRetryable: true
