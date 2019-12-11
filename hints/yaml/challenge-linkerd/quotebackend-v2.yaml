@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: quotesbackend-v2
+  namespace: challengelinkerd
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        name: quotesbackend-v2
+        app: backend
+        version: v2
+    spec:
+      containers:
+      - name: calcbackend
+        image: csaocpger/quotesbackendst:1
+        ports:
+          - containerPort: 3000
+            name: http         
+            protocol: TCP
+        env: 
+          - name: "FAIL_ENABLED"
+            value: "0"
