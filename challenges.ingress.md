@@ -322,7 +322,7 @@ Now that cert-manager is installed, we need to add a few Kubernetes definitions 
 
 Register a certificate issuer for our cluster. Replace `<EMAIL_ADDRESS>` with your email address.
 
-> We are deploying two issuers: one for testing and on for production.
+> We are deploying two issuers: one for testing and one for production.
 
 ```yaml
 apiVersion: cert-manager.io/v1alpha2
@@ -511,7 +511,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    certmanager.k8s.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/issuer: letsencrypt-staging
   name: oauth2-ingress
   namespace: ingress-samples
 spec:
@@ -537,7 +537,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /
-    certmanager.k8s.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/issuer: letsencrypt-staging
     nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
     nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$request_uri"
 spec:
