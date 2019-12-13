@@ -42,24 +42,16 @@ $ kubectl create ns ingress-samples
 
 Now, let's start by deploying the NGINX ingress controller to our cluster! The most convienient way is to use a preconfigured [Helm chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress).
 
+> Be aware: we use Helm 3!
+
 ```shell
-helm install stable/nginx-ingress --name clstr-ingress --set rbac.create=true,controller.scope.enabled=true,controller.scope.namespace=ingress-samples,controller.service.externalTrafficPolicy=Local --namespace ingress-samples
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
+$ helm install clstr-ingress stable/nginx-ingress --set rbac.create=true,controller.scope.enabled=true,controller.scope.namespace=ingress-samples,controller.service.externalTrafficPolicy=Local --namespace ingress-samples
 ```
 
 > **Info:** we limit the scope of our ingress controller to a certain namespace (*ingress-samples*). In production environments, it is a good practices to not share an ingress controller for multiple environments. NGINX configuration quickly grows up to thousands of lines and suddenly starts to have config reload issues! Therefore, try to keep things clean, give each environment its own controller and avoid such problems from the beginning.
 
-In case you get an error when using Helm / Tiller:
-
-```shell
-kubectl --namespace kube-system create serviceaccount tiller
- 
-kubectl create clusterrolebinding tiller-cluster-rule \
---clusterrole=cluster-admin --serviceaccount=kube-system:tiller
- 
-kubectl --namespace kube-system patch deploy tiller-deploy \
--p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
-
-```
 
 ## Deploy Sample Applications ##
 
@@ -68,7 +60,7 @@ First, deploy some sample application we can use to demonstrate the inress featu
 ```shell
 $ helm repo add azure-samples https://azure-samples.github.io/helm-charts/
 
-$ helm install azure-samples/azure-vote --set title="Winter Is Coming?" --set value1="Jon and Daenerys say YES" --set value2="Cersei says NO" --set serviceName=got-vote --set serviceType=ClusterIP --set serviceNameFront=got-vote-front --name got-vote --namespace ingress-samples
+$ helm install got-vote azure-samples/azure-vote --set title="Winter Is Coming?" --set value1="Jon and Daenerys say YES" --set value2="Cersei says NO" --set serviceName=got-vote --set serviceType=ClusterIP --set serviceNameFront=got-vote-front --namespace ingress-samples
 ```
 
 Test that the application is running via port-forwarding:
@@ -88,7 +80,7 @@ Your browser should be able to access the web application
 Next sample application:
 
 ```shell
-$ helm install azure-samples/azure-vote --set title="Is the Hawkins National Laboratory a safe place?" --set value1="Will Byers says no" --set value2="Eleven says NOOOOOOO!!" --set serviceName=stranger-things-vote --set serviceType=ClusterIP --set serviceNameFront=stranger-things-vote-front --name stranger-things-vote --namespace ingress-samples
+$ helm install strangerthingsvote azure-samples/azure-vote --set title="Is the Hawkins National Laboratory a safe place?" --set value1="Will Byers says no" --set value2="Eleven says NOOOOOOO" --set serviceName=stranger-things-vote --set serviceType=ClusterIP --set serviceNameFront=stranger-things-vote-front --namespace ingress-samples
 ```
 
 Again, test via port-forwarding:
@@ -107,7 +99,7 @@ We deploy both applications with a frontend service of type `ClusterIP`, because
 
 Now that our sample applications are running (but still aren't reachable via the internet), we can create ingress definitions for each of the application. We will demonstrate this by using `Domain-based routing` (you can also use e.g. path-based routing. You will see an example later when integrating AAD to login to an application).
 
-> **Optional, but highly recommended:** for domain-based routing, you need a custom domain, you can use (and manage). If you don't have a domain, you can create a domain at a free domain provider for testing purposes. There are several services out there you can use, e.g. https://www.ddnss.de (supports wildcards - we will need this feature!) or https://www.noip.com (doesn't support wildcards in the "free" plan). All you need to do is register a domain and point the *A-Record* to the IP address of your ingress controller. If you don't want to create an account at one of these providers, you can go through all of the samples...but you won't be able to complete this challenge.
+> **Highly recommended:** for domain-based routing, you need a custom domain, you can use (and manage). If you don't have a domain, you can create a domain at a free domain provider for testing purposes. There are several services out there you can use, e.g. https://www.ddnss.de. If you are really lazy, just use https://nip.io ;) .
 
 So, let's create ingress resources for our two applications:
 
@@ -307,63 +299,69 @@ So, let's install that addon in our Kubernetes cluster.
 We will use Helm to install the cert-manager.
 
 ```shell
-$ kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
+$ kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml
 
-$ kubectl label namespace ingress-samples certmanager.k8s.io/disable-validation=true
+$ kubectl create namespace cert-manager
 
 $ helm repo add jetstack https://charts.jetstack.io
 
 $ helm repo update
 
-$ helm install jetstack/cert-manager --name cert-manager --version v0.8.1 \
-  --set ingressShim.defaultIssuerName=letsencrypt-prod \
-  --set ingressShim.defaultIssuerKind=ClusterIssuer --namespace ingress-samples
+$ helm install cert-manager \
+  --namespace cert-manager \
+  --version v0.12.0 \
+  jetstack/cert-manager \
+   --set ingressShim.defaultIssuerName=letsencrypt-prod \
+   --set ingressShim.defaultIssuerKind=ClusterIssuer \
+   --set ingressShim.defaultIssuerGroup=cert-manager.io
 ```
 
 Now that cert-manager is installed, we need to add a few Kubernetes definitions to our cluster, to be able to request SSL certificates from *Let's Encrypt*.
 
 ### Certificate Issuer ###
 
-Register a certificate issuer for our cluster. Replace `<EMAIL>` with your email address.
+Register a certificate issuer for our cluster. Replace `<EMAIL_ADDRESS>` with your email address.
+
+> We are deploying two issuers: one for testing and one for production.
 
 ```yaml
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: <EMAIL_ADDRESS>
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    # Enable the HTTP-01 challenge provider
+    solvers:
+    - http01:
+        ingress:
+          class:  nginx
+---
+apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
-  namespace: ingress-samples
 spec:
   acme:
+    # The ACME server URL
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: <EMAIL>
+    # Email address used for ACME registration
+    email: <EMAIL_ADDRESS>
+    # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
       name: letsencrypt-prod
-    http01: {}
-```
-
-### Create Domain Certificate ###
-
-Register a certificate for your domain. Replace `<DOMAIN>` with the domain, you registered at the DNS service, e.g. *project-unicorn.ddnss.de*.
-
-```yaml
-apiVersion: certmanager.k8s.io/v1alpha1
-kind: Certificate
-metadata:
-  name: domain-cert
-  namespace: ingress-samples
-spec:
-  secretName: tls-secret
-  dnsNames:
-  - <DOMAIN>
-  acme:
-    config:
+    # Enable the HTTP-01 challenge provider
+    solvers:
     - http01:
-        ingressClass: nginx
-      domains:
-      - <DOMAIN>
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
+        ingress:
+          class: nginx
 ```
 
 ### Deploy an Auth-Proxy ###
@@ -513,10 +511,14 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/issuer: letsencrypt-staging
   name: oauth2-ingress
   namespace: ingress-samples
 spec:
+  tls:
+    - hosts:
+        - <SUBDOMAIN.YOUR_DOMAIN>
+      secretName: tls-secret
   rules:
     - host: <SUBDOMAIN.YOUR_DOMAIN>
       http:
@@ -525,10 +527,6 @@ spec:
             backend:
               serviceName: oauth2-proxy-svc
               servicePort: 4180
-  tls:
-    - hosts:
-        - <SUBDOMAIN.YOUR_DOMAIN>
-      secretName: tls-secret
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -539,7 +537,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/issuer: letsencrypt-staging
     nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
     nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$request_uri"
 spec:
@@ -559,7 +557,7 @@ spec:
 
 A few notes on the two definitions. 
 
-If you look at the annotations of the first ingress, you can see that we tell NGINX to automatically rewrite `http` traffic to `https` (`nginx.ingress.kubernetes.io/ssl-redirect: "true"`). We also request a SSL certificate for the `spec.tls.hosts` entry by using `certmanager.k8s.io/cluster-issuer: letsencrypt-prod` (where we tell cert-manager to use our `ClusterIssuer` 'lets-encrypt' which in turn will request the certificate and put it in the `secret` called 'tls-secret').
+If you look at the annotations of the first ingress, you can see that we tell NGINX to automatically rewrite `http` traffic to `https` (`nginx.ingress.kubernetes.io/ssl-redirect: "true"`). We also request a SSL certificate for the `spec.tls.hosts` entry by using `certmanager.k8s.io/cluster-issuer: letsencrypt-staging` (where we tell cert-manager to use our `ClusterIssuer` 'lets-encrypt' which in turn will request the certificate and put it in the `secret` called 'tls-secret'). Be aware: we use the *staging* cluster issuer. After you have deployed the ingress definitions, check the certificate via *kubectl describe certificate -n ingress-samples*. If the cert was successfully issued, change to *letsencrypt-prod* (ingress annotation).
 
 Let's have a look at the second ingress definition. There are two new annotations:
 
