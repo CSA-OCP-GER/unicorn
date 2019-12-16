@@ -12,57 +12,15 @@ The DemoApi just echos these headers and runs on port 80 that is not accessible 
 
 The following diagram illustrates the scenario:
 
-
 ![alt-text](img/sidecar-demo-overview.png)
-
-
-## Deploy the Demo Application to your cluster
-
-Open a shell and navigate to the [Demo API project](apps/aspnetcore-sidecar/DemoApi) and build the docker image.
-
-```Shell
-docker build -t sidecardemoapi:1.0 .
-```
-
-Now tag your image to push it to Azure container registry later.
-
-```
-docker tag sidecardemoapi:1.0 <your acr name>.azurecr.io/sidecardemoapi:1.0
-```
-
-Navigate to the [SidcarProxy project](apps/aspnetcore-sidecar/SidecarProxy) and build the docker image.
-
-```
-docker build -t sidecarproxy:1.0 .
-```
-
-Now tag your image to push it to Azure container registry later.
-
-```Shell
-docker tag sidecarproxy:1.0 <your acr name>.azurecr.io/sidecarproxy:1.0
-```
-
-## Push the images to Azure container registry
-
-Login to your Azure container registry.
-
-```
-az acr login -n <your acr name>
-```
-
-Now push the docker images.
-
-```
-docker push <your acr name>.azurecr.io/sidecardemoapi:1.0
-docker push <your acr name>.azurecr.io/sidecarproxy:1.0
-```
 
 ## Deploy the application
 
-Open the [deployment file](hints/yaml/challenge-sidecar/deployment.yaml) and replace the Azure container registry name and image secret.
+Look at [deployment file](hints/yaml/challenge-sidecar/deployment.yaml) to see how to create a pod with a sidecar.
+Deploy the application:
 
 ```
-kubectl apply -f .\deployment.yaml
+kubectl apply -f .\deployment.yaml -n <your namespace>
 ```
 
 Get the ip address of the sidecar demo service.
@@ -73,7 +31,7 @@ sidecarsvc  LoadBalancer   10.0.47.242    13.95.223.194   80:31007/TCP   5d
 ```
 
 ```Shell
-kubectl get service
+kubectl get service -n <your namespace>
 ```
 
 Open your browser and navigate to:
@@ -82,7 +40,7 @@ Open your browser and navigate to:
 http://<service ip>/swagger/
 ```
 
-Try out the ```Echo``` method, which just echos all received HTTP headers and take a look at the response.
+Try out the `Echo` method, which just echos all received HTTP headers and take a look at the response.
 There are two headers which were injected by the sidecar proxy:
 
 ```JSON
