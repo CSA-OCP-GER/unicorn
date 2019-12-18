@@ -2,7 +2,9 @@
 
 ## Introduction to Linkerd ##
 
-...
+Linkerd is the second "player" in the service mesh space.
+
+> *more intro....*
 
 ## Install Linkerd ##
 
@@ -144,7 +146,7 @@ spec:
     spec:
       containers:
       - name: calcbackend
-        image: csaocpger/quotesbackend:1
+        image: csaocpger/quotesbackend:3
         ports:
           - containerPort: 3000
             name: http
@@ -193,7 +195,7 @@ spec:
     spec:
       containers:
       - name: quotesgateway
-        image: csaocpger/quotesgateway:1
+        image: csaocpger/quotesgateway:3
         ports:
         - containerPort: 3000
           name: http
@@ -202,7 +204,7 @@ spec:
         - name: "GATEWAY_PORT"
           value: "3000"
         - name: "GATEWAY_QUOTES_URL"
-          value: "http://quotes-backend:3000/api/quotes"
+          value: "http://quotes-backend:3000/api"
 ```
 
 Create secret with SPA endpoint:
@@ -271,7 +273,7 @@ spec:
     spec:
       containers:
       - name: quotesfrontend
-        image: csaocpger/quotesfrontend:2
+        image: csaocpger/quotesfrontend:3
         volumeMounts:
           - mountPath: "/usr/share/nginx/html/settings"
             name: uisettings
@@ -292,62 +294,49 @@ $ linkerd dashboard
 
 ## Service Profiles ##
 
+Generate a service profile from watching current traffic in your cluster.
+
 ```shell
-$ linkerd profile -n challengelinkerd quotes-backend --tap deploy/quotesbackend --tap-duration 10s > quotesserviceprofile.yaml
+$ linkerd profile -n challengelinkerd quotes-backend --tap deploy/quotesbackend --tap-duration 10s
 ```
+
+You will receive output like that:
+
+```yaml
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  creationTimestamp: null
+  name: quotes-backend.challengelinkerd.svc.cluster.local
+  namespace: challengelinkerd
+spec:
+  routes:
+  - condition:
+      method: GET
+      pathRegex: /api/quotes
+    name: GET /api/quotes
+```
+
+Apply that yaml to your cluster and make your service "available" for linkerd.
 
 ### Configure retries ###
 
-#### Add some Choas ####
-
-First, service account that is able to kill pods...
+When you run the application in "loop mode", you will see errors appear once in a while. Linkerd is able to retry idempotent request. So add *isRetryable* property to your service profile.
 
 ```yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: chaos
-  namespace: challengelinkerd
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
 metadata:
   creationTimestamp: null
-  name: chaos-admin
-  namespace: challengelinkerd
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: admin
-subjects:
-- kind: ServiceAccount
-  name: chaos
-  namespace: challengelinkerd
-```
-
-Chaos pod (kills backend pods in current namespace)
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    run: chaos
-  name: chaos
+  name: quotes-backend.challengelinkerd.svc.cluster.local
   namespace: challengelinkerd
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      run: chaos
-  template:
-    metadata:
-      labels:
-        run: chaos
-    spec:
-      containers:
-      - image: csaocpger/chaos:4
-        name: chaos
-      serviceAccountName: chaos
-      automountServiceAccountToken: true
+  routes:
+  - condition:
+      method: GET
+      pathRegex: /api/quotes
+    name: GET /api/quotes
+    isRetryable: true
 ```
+
+Again apply that configuration to your cluster and see the errors disappear, because linkerd will retry requests that fail. Your app doesn't have to deal with errors anymore.
