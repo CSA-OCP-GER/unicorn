@@ -95,7 +95,7 @@ If Helm is not installed on your system execute the following [steps](https://do
 Install NGINX Ingress Controller using Helm.
 
 ```Shell
-> helm install ingress stable/nginx-ingress --namespace <your namespace> -f .\internal-ingress.yaml --set controller.replicaCount=2
+> helm install ingress stable/nginx-ingress --namespace <your namespace> -f values.yaml --set controller.replicaCount=2
 ```
 
 Check if the service for the controller is deployed using the ip address 16.0.255.1
