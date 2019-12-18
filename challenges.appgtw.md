@@ -92,46 +92,10 @@ controller:
 
 If Helm is not installed on your system execute the following [steps](https://docs.helm.sh/using_helm/#installing-helm).
 
-Initialize Helm.
-Create a file named helm-rbac.yaml and copy in the following yaml.
-
-```yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: tiller
-  namespace: kube-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: tiller
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-  - kind: ServiceAccount
-    name: tiller
-    namespace: kube-system
-```
-
-Create the service account and role binding with `kubectl apply` command.
-
-```Shell
-> kubectl apply -f helm-rbac.yaml
-```
-
-Initialize Helm.
-
-```Shell
-helm init --service-account tiller
-```
-
 Install NGINX Ingress Controller using Helm.
 
 ```Shell
-> helm install stable/nginx-ingress --name ingress --namespace <your namespace> -f .\internal-ingress.yaml --set controller.replicaCount=2
+> helm install ingress stable/nginx-ingress --namespace <your namespace> -f .\internal-ingress.yaml --set controller.replicaCount=2 --generate-name
 ```
 
 Check if the service for the controller is deployed using the ip address 16.0.255.1
