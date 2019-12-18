@@ -375,7 +375,7 @@ You will need to adjust the following parameters:
 - `<TENANT_ID>` - your Azure tenant ID
 - `<APPLICATION_ID>` - the ID of the application you created in AAD
 - `<APPLICATION_KEY>` - the client secret you created for the AAD application
-- `<BASE64_ENCODED_CUSTOM_SECRET>` - create a secret like "mysecret123!" and encode it as a base64 string. (`echo  'mysecret123!' | base64` or at https://www.base64encode.org/)
+- `<BASE64_ENCODED_CUSTOM_SECRET>` - create a secret like "mysecret123!" and encode it as a base64 string. (`echo  'mysecret123!' | base64` or at https://www.base64encode.org/. Example base64 secret: bXlzZWNyZXQxMjMhCg==)
 
 ```yaml
 apiVersion: extensions/v1beta1

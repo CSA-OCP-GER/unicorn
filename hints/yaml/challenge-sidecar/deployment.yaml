@@ -35,18 +35,16 @@ spec:
         app: sidecar
     spec:
       containers:
-      - name: sidecarproxy
-        image: csaocpger/aspnetsidecar
-        env:
-          - name: DEMOAPI_PORT
-            value: "80"
-          - name: PROXY_PORT
-            value: "8080"
-        ports:
-          - containerPort: 8080
-            name: http
-            protocol: TCP           
-      - name: demoapi
-        image: csaocpger/aspnetdemoapi
-      imagePullSecrets:
-        - name: <secrets>
+        - name: sidecarproxy
+          image: csaocpger/aspnetsidecar:1.0
+          env:
+            - name: DEMOAPI_PORT
+              value: "80"
+            - name: PROXY_PORT
+              value: "8080"
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+        - name: demoapi
+          image: csaocpger/aspnetdemoapi:1.0

@@ -218,7 +218,7 @@ spec:
       priorityClassName: mylow-priority
 ```
 
-You can see, that some of the pods can't be scheduled, because Kubernetes reports low resources.
+You can see, that some of the pods can't be scheduled, because Kubernetes reports low resources. You can execute `kubectl get events` to review the events including detailed information why the pods coudn't be scheduled.
 
 Now, if we wanted to deploy further pods that definitely need to run, we wouldn't be able to do so - except: we can give them a higher priority which leads to eviction of running pods with "low-priority".
 
