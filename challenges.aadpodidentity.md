@@ -124,7 +124,7 @@ Do not change the name of the secrets!
 ## Install Identity on your AKS Cluster ##
 
 Edit and save the file [aadpodidentity.yaml](hints/yaml/challenge-aadpodidentity/aadpodidentity.yaml).
-Replace clientid and manage-didentity-resourcename.
+Replace clientid and managed-identity-resourcename.
 
 ```YAML
 apiVersion: "aadpodidentity.k8s.io/v1"
