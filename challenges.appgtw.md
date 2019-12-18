@@ -95,7 +95,7 @@ If Helm is not installed on your system execute the following [steps](https://do
 Install NGINX Ingress Controller using Helm.
 
 ```Shell
-> helm install ingress stable/nginx-ingress --namespace <your namespace> -f .\internal-ingress.yaml --set controller.replicaCount=2 --generate-name
+> helm install ingress stable/nginx-ingress --namespace <your namespace> -f .\internal-ingress.yaml --set controller.replicaCount=2
 ```
 
 Check if the service for the controller is deployed using the ip address 16.0.255.1
@@ -116,13 +116,13 @@ Before you can install the sample Helm charts, add the Azure samples repository 
 Create the first demo application from a Helm chart with the following command:
 
 ```Shell
-helm install azure-samples/aks-helloworld --namespace <your namespace>
+helm install azure-samples/aks-helloworld --namespace <your namespace> --generate-name
 ```
 
 Now install a second instance of the demo application. For the second instance, you specify a new title so that the two applications are visually distinct. You also specify a unique service name:
 
 ```Shell
-helm install azure-samples/aks-helloworld --namespace <your namespace> --set title="AKS Ingress Demo" --set serviceName="ingress-demo"
+helm install azure-samples/aks-helloworld --namespace <your namespace> --set title="AKS Ingress Demo" --set serviceName="ingress-demo" --generate-name
 ```
 
 Both applications are now running on your Kubernetes cluster. To route traffic to each application, create a Kubernetes ingress resource. The ingress resource configures the rules that route traffic to one of the two applications.
