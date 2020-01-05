@@ -1,6 +1,7 @@
 var express = require("express");
 var app = express();
 var picard = require('picard-quotes');
+var os = require('os');
 var fail = false;
 var cors = require('cors');
 app.use(cors());
@@ -26,7 +27,10 @@ app.get("/api/quotes", (req, res, next) => {
             debugger;
             return res.json(
                 {
-                    quote: `Picard says: ${quote.quote}`
+                    quote: `Picard says: ${quote.quote}`,
+                    host: os.hostname(),
+                    image: process.env.IMAGE || 'local',
+                    type: 'st'
                 }
             );
         }

@@ -2,11 +2,24 @@
   <v-container style="z-index: 100;">
     <v-layout text-center wrap>
       <v-flex style="z-index: 100;" xs12>
-        <v-img :src="require('../assets/sw-logo.png')" class="my-3" contain height="200"></v-img>
+        <v-img
+          v-show="type == 'sw' || type == ''"
+          :src="require('../assets/sw-logo.png')"
+          class="my-3"
+          contain
+          height="200"
+        ></v-img>
+        <v-img
+          v-show="type == 'st'"
+          :src="require('../assets/st-logo.png')"
+          class="my-3"
+          contain
+          height="200"
+        ></v-img>
       </v-flex>
 
       <v-flex xs12 style="z-index: 100;" mb-4>
-        <h2 class="display-1 font-weight-bold mb-3">Welcome to the famous Star Wars Quotes app!</h2>
+        <h2 class="display-1 font-weight-bold mb-3">Welcome to the famous quotes app!</h2>
         <v-btn @click="reload()" :disabled="looping" class="primary" x-large>Load New Quote</v-btn>
       </v-flex>
       <v-flex class="pt-7" style="z-index: 100;" xs12>
@@ -40,6 +53,7 @@
         indeterminate
       ></v-progress-linear>
       <v-flex xs12 class="pt-10" style="z-index: 100;" mb-4>
+        <p>Host: {{host}} / Image: {{image}}</p>
         <v-alert
           v-if="errorCode == false"
           icon="mdi-voice"
@@ -74,6 +88,9 @@ export default {
     return {
       looping: false,
       quote: "",
+      host: "",
+      image: "",
+      type: "",
       errorCode: false,
       interval: null,
       loading: false,
@@ -90,6 +107,9 @@ export default {
         .then(res => {
           this.errorCode = false;
           this.quote = res.data.quote;
+          this.host = res.data.host;
+          this.type = res.data.type;
+          this.image = res.data.image;
           this.loading = false;
         })
         .catch(() => {

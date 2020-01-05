@@ -1,4 +1,5 @@
 var express = require("express");
+var os = require('os');
 var app = express();
 var starwars = require('starwars');
 var fail = false;
@@ -8,12 +9,12 @@ app.use(cors());
 setTimeout(() => {
     var enabled = process.env.FAIL_ENABLED || false;
     fail = enabled;
-    if(fail) {
+    if (fail) {
         console.log("NOW: failing on purpose.");
     } else {
         console.log("Failing on purpose disabled.");
     }
-}, 120 * 1000);
+}, 60 * 1000);
 
 app.get("/api/quotes", (req, res, next) => {
     // randomly fail after 2 minutes from container start
@@ -24,7 +25,10 @@ app.get("/api/quotes", (req, res, next) => {
 
     return res.json(
         {
-            quote: starwars()
+            quote: starwars(),
+            host: os.hostname(),
+            image: process.env.IMAGE || 'local',
+            type: 'sw'
         }
     );
 });

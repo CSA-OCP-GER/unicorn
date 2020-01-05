@@ -146,7 +146,7 @@ spec:
     spec:
       containers:
       - name: calcbackend
-        image: csaocpger/quotesbackend:3
+        image: csaocpger/quotesbackend:4
         ports:
           - containerPort: 3000
             name: http
@@ -273,7 +273,7 @@ spec:
     spec:
       containers:
       - name: quotesfrontend
-        image: csaocpger/quotesfrontend:3
+        image: csaocpger/quotesfrontend:4
         volumeMounts:
           - mountPath: "/usr/share/nginx/html/settings"
             name: uisettings
