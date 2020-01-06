@@ -7,14 +7,14 @@ var cors = require('cors');
 app.use(cors());
 
 setTimeout(() => {
-    var enabled = process.env.FAIL_ENABLED || false;
+    var enabled = process.env.FAIL_ENABLED == "1" || false;
     fail = enabled;
     if (fail) {
         console.log("NOW: failing on purpose.");
     } else {
         console.log("Failing on purpose disabled.");
     }
-}, 60 * 1000);
+}, 6 * 1000);
 
 app.get("/api/quotes", (req, res, next) => {
     // randomly fail after 2 minutes from container start

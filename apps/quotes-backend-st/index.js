@@ -7,7 +7,7 @@ var cors = require('cors');
 app.use(cors());
 
 setTimeout(() => {
-    var enabled = process.env.FAIL_ENABLED || false;
+    var enabled = process.env.FAIL_ENABLED == "1" || false;
     fail = enabled;
     if (fail) {
         console.log("NOW: failing on purpose.");
