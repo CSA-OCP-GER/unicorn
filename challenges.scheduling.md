@@ -392,16 +392,75 @@ Every organisation running a Kubernetes cluster in production comes to the point
 
 We won't go into deep with HPA, but show you an exmaple of how you can achieve horizontal scaling.
 
-First, deploy an nginx pod with a service.
+First, deploy an nginx deployment with a service and an autoscaler:
 
-```shell
-$ kubectl run nginx-worker --image=nginx --requests=cpu=200m --expose --port=80
+```yaml
+# nginx.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx-worker
+  name: nginx-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-worker
+  template:
+    metadata:
+      labels:
+        app: nginx-worker
+    spec:
+      containers:
+        - image: nginx
+          name: nginx
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 200m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx-worker
+  name: nginx-worker
+spec:
+  ports:
+    - name: 80-80
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: nginx-worker
+  type: ClusterIP
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-worker
+spec:
+  maxReplicas: 10
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-worker
+  targetCPUUtilizationPercentage: 1
+status:
+  currentReplicas: 0
+  desiredReplicas: 0
+
 ```
 
-Then add the Horizontal Pod Autoscaler (we use a pretty low CPU utilization limit to be able to see, how the HPA scales pods over time).
-
 ```shell
-$ kubectl autoscale deployment nginx-worker --cpu-percent=5 --min=1 --max=10
+$ kubectl apply -f nginx.yaml
 ```
 
 Now, put some load on the service.
