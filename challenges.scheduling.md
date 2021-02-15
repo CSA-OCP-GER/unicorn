@@ -466,7 +466,7 @@ $ kubectl apply -f nginx.yaml
 Now, put some load on the service.
 
 ```shell
-$ kubectl run -i --tty load-generator --image=busybox /bin/sh
+$ kubectl run -i --tty load-generator --image=busybox /bin/sh --rm=true
 
 $ while true; do wget -q -O- http://nginx-worker.default.svc.cluster.local; done
 ```
