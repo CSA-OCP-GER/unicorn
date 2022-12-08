@@ -10,7 +10,7 @@
     "name": "dzielke"
   },
   "dependencies": {
-    "express": "^4.15.4",
+    "express": "^4.17.3",
     "morgan": "^1.3.2",
     "dotenv-extended": "^2.0.1",
     "redis": "^2.8.0",
